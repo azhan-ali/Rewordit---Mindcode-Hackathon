@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RewordIt — Communicate Without Regret</title>
+    <meta name="description"
+        content="RewordIt analyzes your typing in real-time, preventing angry messages on Gmail, Slack, and more with AI-driven stress detection.">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0a0a0c;
+            --primary: #f8ab10;
+            /* Gold/Amber */
+            --secondary: #ff3b3b;
+            /* Red */
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-main: #f9f9f9;
+            --text-muted: #a0a0a5;
+            --accent: #2e78ff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow-x: hidden;
+            line-height: 1.6;
+            position: relative;
+        }
+
+        h1,
+        h2,
+        h3,
+        .logo {
+            font-family: 'Playfair Display', serif;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* --- LIGHT MODE --- */
+        body.light-mode {
+            --bg-dark: #f6f8fa;
+            --glass-bg: rgba(255, 255, 255, 0.6);
+            --glass-border: rgba(0, 0, 0, 0.1);
+            --text-main: #111112;
+            --text-muted: #5f6368;
+        }
+
+        body.light-mode .animated-bg {
+            background: #f6f8fa;
+        }
+
+        body.light-mode .bg-grid {
+            background-image:
+                linear-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+        }
+
+        body.light-mode .logo {
+            color: #111112;
+        }
+
+        body.light-mode .privacy-pill {
+            background: rgba(0, 0, 0, 0.05);
+            border-color: rgba(0, 0, 0, 0.1);
+            color: #555;
+        }
+
+        body.light-mode .privacy-pill:hover {
+            background: rgba(0, 0, 0, 0.08);
+            color: #111112;
+        }
+
+        body.light-mode .cta-btn {
+            background: #111112;
+            color: #fff;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        body.light-mode .cta-btn::before {
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        }
+
+        body.light-mode .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            border-color: rgba(0, 0, 0, 0.05);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+        }
+
+        body.light-mode .glass-card:hover {
+            border-color: rgba(0, 0, 0, 0.1);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+        }
+
+        body.light-mode .glass-card::before {
+            background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.05), transparent);
+        }
+
+        body.light-mode .card-number {
+            color: rgba(0, 0, 0, 0.04);
+        }
+
+        body.light-mode .fake-popup {
+            background: #fff;
+            border-color: rgba(0, 0, 0, 0.1);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.1);
+        }
+
+        body.light-mode .fb-outline {
+            border: 1px solid rgba(0, 0, 0, 0.2);
+            color: #111112;
+        }
+
+        body.light-mode .fb-fill {
+            background: rgba(0, 0, 0, 0.05);
+            color: #666;
+        }
+
+        body.light-mode .terminal {
+            background: #fff;
+            border-color: #ddd;
+            color: #000;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+        }
+
+        body.light-mode .term-header {
+            border-bottom-color: #eee;
+        }
+
+        body.light-mode .t-cmd {
+            color: #333;
+        }
+
+        body.light-mode footer {
+            border-top-color: rgba(0, 0, 0, 0.1);
+        }
+
+        body.light-mode .f-logo {
+            color: #111112;
+        }
+
+        /* Theme Toggle Button */
+        .theme-toggle {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-muted);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: 0.3s;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        body.light-mode .theme-toggle {
+            background: rgba(0, 0, 0, 0.05);
+            border-color: rgba(0, 0, 0, 0.1);
+            color: #555;
+        }
+
+        body.light-mode .theme-toggle:hover {
+            background: rgba(0, 0, 0, 0.1);
+            color: #111112;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* --- ANIMATED BACKGROUND --- */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            overflow: hidden;
+            background: var(--bg-dark);
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.4;
+            animation: floatOrb 20s infinite alternate ease-in-out;
+            pointer-events: none;
+        }
+
+        .orb-1 {
+            width: 600px;
+            height: 600px;
+            background: #ff3b3b;
+            top: -200px;
+            left: -100px;
+            animation-duration: 25s;
+        }
+
+        .orb-2 {
+            width: 500px;
+            height: 500px;
+            background: #f8ab10;
+            bottom: -150px;
+            right: -100px;
+            animation-duration: 20s;
+            animation-delay: -5s;
+        }
+
+        .orb-3 {
+            width: 400px;
+            height: 400px;
+            background: #2e78ff;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-duration: 30s;
+            opacity: 0.2;
+        }
+
+        @keyframes floatOrb {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            50% {
+                transform: translate(50px, 80px) scale(1.1);
+            }
+
+            100% {
+                transform: translate(-30px, -60px) scale(0.9);
+            }
+        }
+
+        /* -- Grid Overlay -- */
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            z-index: -1;
+            pointer-events: none;
+            mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
+            -webkit-mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
+        }
+
+        /* --- NAVIGATION --- */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 6%;
+            position: absolute;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -0.5px;
+        }
+
+        .logo span {
+            color: var(--primary);
+            font-style: italic;
+        }
+
+        .privacy-pill {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #a0a0a5;
+            backdrop-filter: blur(10px);
+            transition: 0.3s;
+        }
+
+        .privacy-pill:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            background: #4ade80;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #4ade80;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.4);
+            }
+
+            70% {
+                box-shadow: 0 0 0 6px rgba(74, 222, 128, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(74, 222, 128, 0);
+            }
+        }
+
+        /* --- HERO --- */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .hero-label {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 20px;
+            border: 1px solid rgba(248, 171, 16, 0.3);
+            background: rgba(248, 171, 16, 0.1);
+            color: var(--primary);
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 24px;
+            animation: fadeUp 1s ease 0.1s both;
+        }
+
+        .hero h1 {
+            font-size: clamp(50px, 8vw, 100px);
+            font-weight: 600;
+            line-height: 1.05;
+            margin-bottom: 30px;
+            max-width: 1000px;
+            letter-spacing: -1px;
+            animation: fadeUp 1s ease 0.2s both;
+
+            /* Magic Gradient Text Effect */
+            background: linear-gradient(to right, #ffffff, #ffffff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero h1 i {
+            font-family: inherit;
+            background: linear-gradient(-45deg, #f8ab10, #ff3b3b, #f8ab10);
+            background-size: 200% auto;
+            color: transparent;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: textShimmer 3s linear infinite;
+        }
+
+        @keyframes textShimmer {
+            to {
+                background-position: 200% center;
+            }
+        }
+
+        .hero p {
+            font-size: clamp(18px, 2vw, 22px);
+            color: var(--text-muted);
+            max-width: 650px;
+            margin-bottom: 50px;
+            font-weight: 300;
+            animation: fadeUp 1s ease 0.3s both;
+        }
+
+        .cta-btn {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 18px 40px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #0a0a0c;
+            background: #fff;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: fadeUp 1s ease 0.4s both;
+            box-shadow: 0 0 40px rgba(255, 255, 255, 0.1);
+        }
+
+        .cta-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 10px 40px rgba(255, 255, 255, 0.2);
+        }
+
+        .cta-btn:hover::before {
+            left: 100%;
+        }
+
+        /* --- GLASS SECTIONS --- */
+        section {
+            padding: 120px 6%;
+            max-width: 1300px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+        }
+
+        .section-tag {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .section-title {
+            font-size: clamp(40px, 5vw, 60px);
+            font-weight: 500;
+            margin-bottom: 20px;
+            line-height: 1.1;
+        }
+
+        .section-desc {
+            font-size: 20px;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin-bottom: 60px;
+        }
+
+        /* -- CARDS -- */
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+        }
+
+        .glass-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 40px;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), transform 0.1s;
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 20px 50px rgba(248, 171, 16, 0.15), 0 0 20px rgba(255, 59, 59, 0.1);
+        }
+
+        .glass-card:hover .card-number {
+            transform: translateZ(30px);
+            color: rgba(248, 171, 16, 0.8);
+            text-shadow: 0 0 20px rgba(248, 171, 16, 0.4);
+        }
+
+        .glass-card:hover::before {
+            opacity: 1;
+        }
+
+        .card-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 60px;
+            font-style: italic;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.1);
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            line-height: 1;
+            transition: transform 0.4s ease, color 0.4s ease, text-shadow 0.4s ease;
+        }
+
+        .glass-card h3 {
+            font-size: 28px;
+            font-weight: 500;
+            margin-top: 20px;
+            margin-bottom: 16px;
+        }
+
+        .glass-card p {
+            color: var(--text-muted);
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* --- VISUAL SHOWCASE --- */
+        .showcase-block {
+            display: flex;
+            align-items: center;
+            gap: 60px;
+            margin-top: 150px;
+            margin-bottom: 100px;
+        }
+
+        .showcase-text {
+            flex: 1;
+        }
+
+        .showcase-visual {
+            flex: 1;
+            position: relative;
+        }
+
+        .score-pill {
+            background: rgba(255, 59, 59, 0.1);
+            border: 1px solid rgba(255, 59, 59, 0.3);
+            color: #ff3b3b;
+            padding: 8px 16px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+
+        .fake-popup {
+            background: #111112;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8);
+            transform: perspective(1000px) rotateY(-10deg) rotateX(5deg);
+            transition: transform 0.5s ease;
+        }
+
+        .fake-popup:hover {
+            transform: perspective(1000px) rotateY(0deg) rotateX(0deg);
+        }
+
+        .fake-timer {
+            font-family: 'Playfair Display', serif;
+            font-size: 50px;
+            color: #ff3b3b;
+            text-align: center;
+            margin: 20px 0;
+            font-weight: 700;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 80%;
+            background: #ff3b3b;
+            box-shadow: 0 0 10px #ff3b3b;
+        }
+
+        .fake-btn-group {
+            display: flex;
+            gap: 15px;
+        }
+
+        .fake-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .fb-outline {
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+        }
+
+        .fb-fill {
+            background: rgba(255, 255, 255, 0.05);
+            color: #888;
+            border: 1px solid transparent;
+        }
+
+        @media (max-width: 900px) {
+            .showcase-block {
+                flex-direction: column;
+            }
+
+            .fake-popup {
+                transform: none;
+            }
+        }
+
+        /* --- INSTALL SECTION --- */
+        .terminal {
+            background: #000;
+            border: 1px solid #333;
+            border-radius: 16px;
+            padding: 30px;
+            font-family: monospace;
+            color: #4ade80;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .term-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 10px 20px;
+            border-bottom: 1px solid #333;
+            display: flex;
+            gap: 6px;
+        }
+
+        .t-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .t-red {
+            background: #ff5f56;
+        }
+
+        .t-yel {
+            background: #ffbd2e;
+        }
+
+        .t-grn {
+            background: #27c93f;
+        }
+
+        .term-body {
+            margin-top: 30px;
+            line-height: 2;
+            font-size: 15px;
+        }
+
+        .t-cmd {
+            color: #fff;
+        }
+
+        .t-comment {
+            color: #888;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 40px 6%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 50px;
+            color: var(--text-muted);
+        }
+
+        .f-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* --- CUSTOM CURSOR --- */
+        body {
+            cursor: none;
+        }
+
+        a,
+        button,
+        .cta-btn,
+        .glass-card,
+        .theme-toggle,
+        .fake-btn,
+        input,
+        [role="button"] {
+            cursor: none !important;
+        }
+
+        .cursor-dot,
+        .cursor-outline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            z-index: 9999;
+            pointer-events: none;
+        }
+
+        .cursor-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--primary);
+            transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .cursor-outline {
+            width: 40px;
+            height: 40px;
+            border: 1px solid rgba(248, 171, 16, 0.5);
+            transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+        }
+
+        body.light-mode .cursor-outline {
+            border-color: rgba(248, 171, 16, 0.8);
+        }
+
+        .cursor-hover .cursor-dot {
+            transform: translate(-50%, -50%) scale(1.5);
+            background-color: var(--secondary);
+            box-shadow: 0 0 10px var(--secondary);
+        }
+
+        .cursor-hover .cursor-outline {
+            transform: translate(-50%, -50%) scale(1.5);
+            border-color: rgba(255, 59, 59, 0.5);
+            background-color: rgba(255, 59, 59, 0.05);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Custom Cursor -->
+    <div class="cursor-dot" id="cursor-dot"></div>
+    <div class="cursor-outline" id="cursor-outline"></div>
+
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+    <div class="bg-grid"></div>
+
+    <nav>
+        <div class="logo">Reword<span>It</span></div>
+        <div class="nav-right">
+            <button class="theme-toggle" id="theme-btn" title="Toggle Light Mode">
+                <svg id="moon-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
+                <svg id="sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+            </button>
+            <div class="privacy-pill">
+                <div class="dot"></div>
+                100% On-Device Privacy
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <span class="hero-label">The AI Emotional Safety Net</span>
+        <h1>Communicate <i>without</i> regret.</h1>
+        <p>RewordIt analyzes your typing in real-time, catching high-stress messages before you press send. Cool down,
+            retain your sanity, and preserve your relationships.</p>
+
+        <a href="#install" class="cta-btn">Install Extension Free</a>
+    </header>
+
+    <section id="features">
+        <span class="section-tag">Capabilities</span>
+        <h2 class="section-title">Designed for clarity.</h2>
+        <p class="section-desc">Invisible until you need it. RewordIt acts seamlessly in the background of Gmail, Slack,
+            and your favorite apps.</p>
+
+        <div class="grid-3">
+            <div class="glass-card">
+                <div class="card-number">1</div>
+                <h3>Real-time Analysis</h3>
+                <p>Watches text areas locally. If you pause typing after 10 words, it securely evaluates the emotional
+                    weight using advanced AI models.</p>
+            </div>
+            <div class="glass-card">
+                <div class="card-number">2</div>
+                <h3>Smart Intervention</h3>
+                <p>If the stress score crosses a threshold, a sleek, non-intrusive popup offers a calmer, professionally
+                    reworded alternative.</p>
+            </div>
+            <div class="glass-card">
+                <div class="card-number">3</div>
+                <h3>Weekly Reporting</h3>
+                <p>Keep a continuous, completely private local log of your emotional communication trends, accessible
+                    via your personal dashboard.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="showcase">
+        <div class="showcase-block">
+            <div class="showcase-text">
+                <div class="score-pill">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    CRITICAL STRESS
+                </div>
+                <h2 class="section-title">The Cooling Period <i>activates.</i></h2>
+                <p class="section-desc">When a message scores 85 or higher, the extension doesn't just suggest — it
+                    intervenes. The screen locks with a 5-minute unskippable timer, forcing a vital emotional pause
+                    before you make a permanent mistake.</p>
+            </div>
+
+            <div class="showcase-visual">
+                <div class="fake-popup">
+                    <div style="font-size: 13px; color: #a0a0a5; text-transform: uppercase; letter-spacing: 1px;">
+                        Message sending paused for your protection</div>
+                    <div class="fake-timer">04:12</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill"></div>
+                    </div>
+                    <p style="color: #888; font-size: 14px; margin-bottom: 20px;">Take a breath. You can still send this
+                        — but do you really want to?</p>
+                    <div class="fake-btn-group">
+                        <div class="fake-btn fb-outline">— Edit Message</div>
+                        <div class="fake-btn fb-fill">Send Anyway →</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="install" style="text-align: center;">
+        <h2 class="section-title">Ready to install?</h2>
+        <p class="section-desc" style="margin: 0 auto 40px;">Follow these steps to load the unpacked extension into
+            Chrome Developer mode.</p>
+
+        <div class="terminal">
+            <div class="term-header">
+                <div class="t-dot t-red"></div>
+                <div class="t-dot t-yel"></div>
+                <div class="t-dot t-grn"></div>
+            </div>
+            <div class="term-body" style="text-align: left;">
+                <span class="t-comment">// 1. Download source folder</span><br>
+                <span class="t-cmd">Navigate to <b>chrome://extensions/</b></span><br><br>
+                <span class="t-comment">// 2. Enable Developer Settings</span><br>
+                <span class="t-cmd">Toggle "Developer mode" in the top right.</span><br><br>
+                <span class="t-comment">// 3. Install Extension</span><br>
+                <span class="t-cmd">Click "Load unpacked" and select the RewordIt folder.</span><br><br>
+                <span class="t-cmd" style="color:#f8ab10;">> RewordIt successfully installed. All data remains
+                    local.</span>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="f-logo">Reword<i>It</i></div>
+        <div>
+            <a href="dashboard.html" style="font-weight: 500; transition: color 0.3s;">Analytics Dashboard →</a>
+        </div>
+    </footer>
+
+    <script>
+        // Simple scroll animation trigger
+        const cards = document.querySelectorAll('.glass-card, .showcase-text, .showcase-visual');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+
+        cards.forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(40px)';
+            card.style.transition = 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)';
+            observer.observe(card);
+        });
+
+        // Theme Toggle Logic
+        const themeBtn = document.getElementById('theme-btn');
+        const sunIcon = document.getElementById('sun-icon');
+        const moonIcon = document.getElementById('moon-icon');
+
+        const savedTheme = localStorage.getItem('rewordit-theme');
+        if (savedTheme === 'light') {
+            document.body.classList.add('light-mode');
+            sunIcon.style.display = 'none';
+            moonIcon.style.display = 'block';
+        }
+
+        themeBtn.addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+            const isLight = document.body.classList.contains('light-mode');
+
+            localStorage.setItem('rewordit-theme', isLight ? 'light' : 'dark');
+
+            if (isLight) {
+                sunIcon.style.display = 'none';
+                moonIcon.style.display = 'block';
+            } else {
+                sunIcon.style.display = 'block';
+                moonIcon.style.display = 'none';
+            }
+        });
+
+        // Custom Cursor Logic
+        const cursorDot = document.getElementById('cursor-dot');
+        const cursorOutline = document.getElementById('cursor-outline');
+
+        window.addEventListener('mousemove', function (e) {
+            cursorDot.style.left = e.clientX + 'px';
+            cursorDot.style.top = e.clientY + 'px';
+
+            cursorOutline.animate({
+                left: e.clientX + 'px',
+                top: e.clientY + 'px'
+            }, { duration: 500, fill: "forwards" });
+        });
+
+        const clickables = document.querySelectorAll('a, button, .glass-card, input, [role="button"], .fake-btn');
+        clickables.forEach((el) => {
+            el.addEventListener('mouseenter', () => {
+                document.body.classList.add('cursor-hover');
+            });
+            el.addEventListener('mouseleave', () => {
+                document.body.classList.remove('cursor-hover');
+            });
+        });
+
+        // 3D Tilt Effect on Cards
+        const tiltCards = document.querySelectorAll('.glass-card, .fake-popup');
+        tiltCards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+
+                const rotateX = ((y - centerY) / centerY) * -10; // Max rotation 10deg
+                const rotateY = ((x - centerX) / centerX) * 10;
+
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+                card.style.transition = 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+            });
+
+            card.addEventListener('mouseenter', () => {
+                card.style.transition = 'none'; // Disable transition for snappy move
+            });
+        });
+    </script>
+</body>
+
+</html>
