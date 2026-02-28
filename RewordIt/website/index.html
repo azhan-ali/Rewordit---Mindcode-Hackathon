@@ -10,6 +10,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap"
         rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
         :root {
             --bg-dark: #0a0a0c;
@@ -354,9 +355,11 @@
         }
 
         .hero-label {
-            display: inline-block;
-            padding: 6px 16px;
-            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 20px;
+            border-radius: 30px;
             border: 1px solid rgba(248, 171, 16, 0.3);
             background: rgba(248, 171, 16, 0.1);
             color: var(--primary);
@@ -364,8 +367,29 @@
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 2px;
-            margin-bottom: 24px;
+            margin-bottom: 30px;
             animation: fadeUp 1s ease 0.1s both;
+        }
+
+        .glow-dot {
+            width: 8px;
+            height: 8px;
+            background: #f8ab10;
+            border-radius: 50%;
+            box-shadow: 0 0 12px #f8ab10;
+            animation: dotGlow 2s infinite alternate;
+        }
+
+        @keyframes dotGlow {
+            0% {
+                opacity: 0.5;
+                box-shadow: 0 0 5px #f8ab10;
+            }
+
+            100% {
+                opacity: 1;
+                box-shadow: 0 0 15px #f8ab10;
+            }
         }
 
         .hero h1 {
@@ -393,6 +417,8 @@
             background-clip: text;
             -webkit-text-fill-color: transparent;
             animation: textShimmer 3s linear infinite;
+            padding-right: 5px;
+            /* Prevent italic clipping */
         }
 
         @keyframes textShimmer {
@@ -407,46 +433,114 @@
             max-width: 650px;
             margin-bottom: 50px;
             font-weight: 300;
+            line-height: 1.6;
             animation: fadeUp 1s ease 0.3s both;
         }
 
-        .cta-btn {
+        .hero-cta-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .cta-btn-premium {
             position: relative;
             display: inline-flex;
             align-items: center;
-            justify-content: center;
-            padding: 18px 40px;
+            gap: 12px;
+            padding: 20px 48px;
             font-size: 18px;
             font-weight: 600;
-            color: #0a0a0c;
-            background: #fff;
+            color: #fff !important;
+            /* Force white text */
+            background: linear-gradient(135deg, rgba(30, 30, 35, 1) 0%, rgba(10, 10, 12, 1) 100%);
             border-radius: 50px;
-            border: none;
-            cursor: pointer;
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-decoration: none;
+            overflow: visible;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             animation: fadeUp 1s ease 0.4s both;
-            box-shadow: 0 0 40px rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            z-index: 1;
         }
 
-        .cta-btn::before {
+        body.light-mode .cta-btn-premium {
+            color: #000 !important;
+            background: linear-gradient(135deg, #f0f0f0 0%, #ffffff 100%);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        }
+
+        /* The glowing animated border using a pseudo-element behind the button */
+        .cta-btn-premium::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(90deg, #f8ab10, #ff3b3b, #f8ab10, #ff3b3b);
+            background-size: 300% auto;
+            z-index: -1;
+            border-radius: 52px;
+            animation: borderShimmer 4s linear infinite;
+        }
+
+        @keyframes borderShimmer {
+            0% {
+                background-position: 0% center;
+            }
+
+            100% {
+                background-position: 300% center;
+            }
+        }
+
+        /* A glowing ambient backdrop to make it pop more */
+        .cta-btn-premium::after {
             content: '';
             position: absolute;
             top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-            transition: left 0.6s ease;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: inherit;
+            border-radius: inherit;
+            z-index: -1;
+            transition: opacity 0.4s ease;
         }
 
-        .cta-btn:hover {
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 10px 40px rgba(255, 255, 255, 0.2);
+        .cta-btn-premium:hover {
+            transform: translateY(-6px) scale(1.03);
+            box-shadow: 0 30px 60px rgba(248, 171, 16, 0.3);
         }
 
-        .cta-btn:hover::before {
-            left: 100%;
+        .cta-btn-premium:hover .cta-icon {
+            transform: translateX(6px);
+        }
+
+        .cta-icon {
+            font-size: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .social-proof {
+            margin-top: 28px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            animation: fadeUp 1s ease 0.5s both;
+        }
+
+        .social-proof .stars {
+            color: #f8ab10;
+            font-size: 18px;
+            letter-spacing: 4px;
+        }
+
+        .social-proof span {
+            color: var(--text-muted);
+            font-size: 14.5px;
+            font-weight: 500;
         }
 
         /* --- GLASS SECTIONS --- */
@@ -590,6 +684,157 @@
             font-size: 14px;
         }
 
+        /* --- CAPABILITIES GRID --- */
+        .cap-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+        }
+
+        .cap-card {
+            display: flex;
+            flex-direction: column;
+            padding: 0 !important;
+            /* resets glass-card padding for header/body split */
+            background: rgba(20, 20, 22, 0.6) !important;
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        }
+
+        body.light-mode .cap-card {
+            background: rgba(250, 250, 250, 0.8) !important;
+            border-color: rgba(0, 0, 0, 0.08) !important;
+        }
+
+        .cap-full {
+            grid-column: 1 / -1;
+        }
+
+        .cap-header {
+            background: rgba(255, 255, 255, 0.02);
+            padding: 24px 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        body.light-mode .cap-header {
+            background: rgba(0, 0, 0, 0.02);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .cap-icon {
+            font-size: 24px;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        body.light-mode .cap-icon {
+            background: rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .cap-title-block {
+            flex: 1;
+        }
+
+        .cap-title-block h4 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .cap-tags {
+            font-size: 11px;
+            font-weight: 600;
+            color: #888;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .cap-badge {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border: 1px solid #4ade80;
+            color: #4ade80;
+            border-radius: 4px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .cap-badge-outline {
+            border-color: #f8ab10;
+            color: #f8ab10;
+        }
+
+        .cap-body {
+            padding: 30px;
+            display: flex;
+            gap: 30px;
+            flex: 1;
+        }
+
+        .cap-vertical {
+            flex-direction: column;
+        }
+
+        .cap-text {
+            flex: 1;
+            font-size: 15px;
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+
+        .cap-text p {
+            margin-bottom: 15px;
+        }
+
+        .cap-text p:last-child {
+            margin-bottom: 0;
+        }
+
+        .cap-terminal {
+            background: #0f0f12;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 8px;
+            padding: 24px;
+            font-family: monospace;
+            font-size: 13.5px;
+            color: #ccc;
+            flex: 1.2;
+            box-shadow: inset 0 2px 20px rgba(0, 0, 0, 0.6);
+            line-height: 1.6;
+        }
+
+        body.light-mode .cap-terminal {
+            background: #111;
+            /* Kept extremely dark in light mode on purpose */
+            border-color: rgba(0, 0, 0, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 900px) {
+            .cap-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cap-full {
+                grid-column: auto;
+            }
+
+            .cap-body:not(.cap-vertical) {
+                flex-direction: column;
+            }
+        }
+
         .fake-popup {
             background: #111112;
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -643,8 +888,15 @@
         }
 
         .fb-outline {
+            background: transparent;
             border: 1px solid rgba(255, 255, 255, 0.2);
             color: #fff;
+            transition: background 0.3s;
+        }
+
+        button.fb-outline:hover,
+        a.fb-outline:hover {
+            background: rgba(255, 255, 255, 0.05);
         }
 
         .fb-fill {
@@ -719,6 +971,82 @@
             color: #888;
         }
 
+        /* --- INSTALL STEPS --- */
+        .install-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+            text-align: left;
+        }
+
+        .step-card {
+            padding: 40px 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        .step-card h3 {
+            font-size: 24px;
+            margin-top: 15px;
+            margin-bottom: 10px;
+        }
+
+        .api-input {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 16px;
+            font-family: monospace;
+            outline: none;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .api-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 10px rgba(248, 171, 16, 0.2);
+        }
+
+        body.light-mode .api-input {
+            background: rgba(255, 255, 255, 0.5);
+            border-color: rgba(0, 0, 0, 0.1);
+            color: #111;
+        }
+
+        body.light-mode .api-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 10px rgba(248, 171, 16, 0.1);
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0, 0, 0, 0.1);
+            border-bottom-color: #000;
+            border-radius: 50%;
+            display: inline-block;
+            animation: rotation 1s linear infinite;
+        }
+
+        body.light-mode .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-bottom-color: #fff;
+        }
+
+        @keyframes rotation {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
         /* --- FOOTER --- */
         footer {
             border-top: 1px solid rgba(255, 255, 255, 0.05);
@@ -749,61 +1077,78 @@
             }
         }
 
-        /* --- CUSTOM CURSOR --- */
-        body {
-            cursor: none;
-        }
-
+        /* --- PREMIUM ELASTIC CURSOR --- */
+        body,
         a,
         button,
-        .cta-btn,
-        .glass-card,
-        .theme-toggle,
-        .fake-btn,
         input,
-        [role="button"] {
+        [role="button"],
+        .glass-card,
+        .fake-btn {
             cursor: none !important;
         }
 
-        .cursor-dot,
-        .cursor-outline {
+        #cursor-dot {
             position: fixed;
             top: 0;
             left: 0;
-            transform: translate(-50%, -50%);
-            border-radius: 50%;
-            z-index: 9999;
-            pointer-events: none;
-        }
-
-        .cursor-dot {
             width: 8px;
             height: 8px;
             background-color: var(--primary);
-            transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10000;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                height 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                opacity 0.3s;
         }
 
-        .cursor-outline {
-            width: 40px;
-            height: 40px;
-            border: 1px solid rgba(248, 171, 16, 0.5);
-            transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+        #cursor-follower {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 36px;
+            height: 36px;
+            border: 1.5px solid var(--primary);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform-origin: center;
+            box-shadow: 0 0 15px rgba(248, 171, 16, 0.2);
+            will-change: transform, width, height, border-width;
+            transition: width 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                height 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                border-width 0.3s, background-color 0.3s;
         }
 
-        body.light-mode .cursor-outline {
-            border-color: rgba(248, 171, 16, 0.8);
+        body.light-mode #cursor-dot {
+            background-color: #111;
         }
 
-        .cursor-hover .cursor-dot {
-            transform: translate(-50%, -50%) scale(1.5);
-            background-color: var(--secondary);
-            box-shadow: 0 0 10px var(--secondary);
+        body.light-mode #cursor-follower {
+            border-color: #111;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
-        .cursor-hover .cursor-outline {
-            transform: translate(-50%, -50%) scale(1.5);
-            border-color: rgba(255, 59, 59, 0.5);
-            background-color: rgba(255, 59, 59, 0.05);
+        /* Hover States */
+        .cursor-hover #cursor-follower {
+            width: 60px;
+            height: 60px;
+            background-color: rgba(248, 171, 16, 0.15);
+            border-width: 0px;
+            box-shadow: 0 0 30px rgba(248, 171, 16, 0.4);
+        }
+
+        body.light-mode .cursor-hover #cursor-follower {
+            background-color: rgba(0, 0, 0, 0.08);
+            box-shadow: none;
+        }
+
+        .cursor-hover #cursor-dot {
+            width: 0px;
+            height: 0px;
+            opacity: 0;
         }
     </style>
 </head>
@@ -811,8 +1156,8 @@
 <body>
 
     <!-- Custom Cursor -->
-    <div class="cursor-dot" id="cursor-dot"></div>
-    <div class="cursor-outline" id="cursor-outline"></div>
+    <div id="cursor-dot"></div>
+    <div id="cursor-follower"></div>
 
     <!-- Animated Background -->
     <div class="animated-bg">
@@ -851,100 +1196,257 @@
     </nav>
 
     <header class="hero">
-        <span class="hero-label">The AI Emotional Safety Net</span>
+        <span class="hero-label">
+            <span class="glow-dot"></span> The AI Emotional Safety Net
+        </span>
         <h1>Communicate <i>without</i> regret.</h1>
         <p>RewordIt analyzes your typing in real-time, catching high-stress messages before you press send. Cool down,
             retain your sanity, and preserve your relationships.</p>
 
-        <a href="#install" class="cta-btn">Install Extension Free</a>
+        <div class="hero-cta-wrapper">
+            <a href="#install" class="cta-btn-premium">
+                <span class="cta-text">Install Extension Free</span>
+                <span class="cta-icon">→</span>
+            </a>
+        </div>
     </header>
 
-    <section id="features">
+    <section id="features" style="max-width: 1400px; padding: 120px 4%;">
         <span class="section-tag">Capabilities</span>
-        <h2 class="section-title">Designed for clarity.</h2>
-        <p class="section-desc">Invisible until you need it. RewordIt acts seamlessly in the background of Gmail, Slack,
-            and your favorite apps.</p>
+        <h2 class="section-title">A complete safety net.</h2>
+        <p class="section-desc">Invisible until you need it. RewordIt acts seamlessly in the background across your
+            ecosystem.</p>
 
-        <div class="grid-3">
-            <div class="glass-card">
-                <div class="card-number">1</div>
-                <h3>Real-time Analysis</h3>
-                <p>Watches text areas locally. If you pause typing after 10 words, it securely evaluates the emotional
-                    weight using advanced AI models.</p>
-            </div>
-            <div class="glass-card">
-                <div class="card-number">2</div>
-                <h3>Smart Intervention</h3>
-                <p>If the stress score crosses a threshold, a sleek, non-intrusive popup offers a calmer, professionally
-                    reworded alternative.</p>
-            </div>
-            <div class="glass-card">
-                <div class="card-number">3</div>
-                <h3>Weekly Reporting</h3>
-                <p>Keep a continuous, completely private local log of your emotional communication trends, accessible
-                    via your personal dashboard.</p>
-            </div>
-        </div>
-    </section>
+        <div class="cap-grid">
 
-    <section id="showcase">
-        <div class="showcase-block">
-            <div class="showcase-text">
-                <div class="score-pill">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <line x1="12" y1="8" x2="12" y2="12"></line>
-                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                    </svg>
-                    CRITICAL STRESS
-                </div>
-                <h2 class="section-title">The Cooling Period <i>activates.</i></h2>
-                <p class="section-desc">When a message scores 85 or higher, the extension doesn't just suggest — it
-                    intervenes. The screen locks with a 5-minute unskippable timer, forcing a vital emotional pause
-                    before you make a permanent mistake.</p>
-            </div>
-
-            <div class="showcase-visual">
-                <div class="fake-popup">
-                    <div style="font-size: 13px; color: #a0a0a5; text-transform: uppercase; letter-spacing: 1px;">
-                        Message sending paused for your protection</div>
-                    <div class="fake-timer">04:12</div>
-                    <div class="progress-bar">
-                        <div class="progress-fill"></div>
+            <!-- Core -->
+            <div class="cap-card cap-full glass-card">
+                <div class="cap-header">
+                    <div class="cap-icon">🎯</div>
+                    <div class="cap-title-block">
+                        <h4>Core — Real-time Tone Detection + Reword</h4>
+                        <span class="cap-tags">EXTENSION POPUP · ALL PLATFORMS · ALWAYS ON</span>
                     </div>
-                    <p style="color: #888; font-size: 14px; margin-bottom: 20px;">Take a breath. You can still send this
-                        — but do you really want to?</p>
-                    <div class="fake-btn-group">
-                        <div class="fake-btn fb-outline">— Edit Message</div>
-                        <div class="fake-btn fb-fill">Send Anyway →</div>
+                    <div class="cap-badge">CORE</div>
+                </div>
+                <div class="cap-body">
+                    <div class="cap-text">
+                        <p>Extension watches every text box on every website. After 1 second typing pause, analyzes tone
+                            using Gemini AI. If stress score above 50, a small popup appears near the text box.</p>
+                        <p>User sees: stress score, emotions detected, calm rewrite suggestion. Two buttons — accept
+                            rewrite or keep original. Zero friction.</p>
+                    </div>
+                    <div class="cap-terminal">
+                        <div style="color: #ff3b3b; margin-bottom: 12px;">⚠ Stress Detected – 78/100 <span
+                                style="color: #444;">-----------------------</span> Emotions:<br><span
+                                style="color: #f8ab10;">frustrated, accusatory</span></div>
+                        <div style="margin-bottom: 12px;">Calmer version: <span style="color: #4ade80;">"I'd love to
+                                align on this — can we find time to connect?"</span></div>
+                        <div><span style="color: #444;">------------------------------------------------</span> <span
+                                style="color: #4ade80;">[✓ Use This]</span> <span style="color: #ff3b3b;">[X Keep
+                                Mine]</span></div>
                     </div>
                 </div>
             </div>
+
+            <!-- Cooling Period -->
+            <div class="cap-card glass-card">
+                <div class="cap-header">
+                    <div class="cap-icon">⏳</div>
+                    <div class="cap-title-block">
+                        <h4>Cooling Period</h4>
+                        <span class="cap-tags">EXTENSION POPUP · TRIGGERS AT 85+ SCORE</span>
+                    </div>
+                </div>
+                <div class="cap-body cap-vertical">
+                    <div class="cap-text">
+                        <p>When stress score hits 85 or above, the send button is intercepted and disabled. A 5-minute
+                            countdown timer appears. User must consciously decide to send.</p>
+                    </div>
+                    <div class="cap-terminal">
+                        <div style="margin-bottom: 12px;"><span style="color: #ff3b3b;">🔴 HIGH STRESS – 91/100</span>
+                            <span style="color: #888;">Message sending in: <span
+                                    style="color: #f8ab10;">04:32</span></span>
+                        </div>
+                        <div><span style="color: #f8ab10;">███████░░░░░░░░░░░░</span> <span
+                                style="color: #4ade80;">[Edit Message]</span> <span style="color: #ff3b3b;">[Send
+                                Anyway]</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mood Timeline -->
+            <div class="cap-card glass-card">
+                <div class="cap-header">
+                    <div class="cap-icon">📈</div>
+                    <div class="cap-title-block">
+                        <h4>Mood Timeline</h4>
+                        <span class="cap-tags">WEBSITE DASHBOARD · DAILY + WEEKLY VIEW</span>
+                    </div>
+                </div>
+                <div class="cap-body cap-vertical">
+                    <div class="cap-text">
+                        <p>Visual graph showing stress levels across the day and week. Automatically identifies your
+                            personal danger zones — times when you consistently write stressed messages.</p>
+                    </div>
+                    <div class="cap-terminal">
+                        <div style="display:flex; justify-content: space-between; margin-bottom:12px;">
+                            <span>Mon <span style="color: #ff3b3b;">████</span> 78</span>
+                            <span>Tue <span style="color: #4ade80;">██</span> 42</span>
+                            <span>Wed <span style="color: #ff3b3b;">█████</span> 95 ⚠</span>
+                        </div>
+                        <div>
+                            <span>Thu <span style="color: #4ade80;">█</span> 31</span> &nbsp;&nbsp;&nbsp;&nbsp;
+                            <span>Fri <span style="color: #4ade80;">█</span> 22 ✓</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Weekly Report -->
+            <div class="cap-card glass-card">
+                <div class="cap-header">
+                    <div class="cap-icon">📊</div>
+                    <div class="cap-title-block">
+                        <h4>Weekly Mental Health Report</h4>
+                        <span class="cap-tags">WEBSITE DASHBOARD · AUTO EVERY SUNDAY</span>
+                    </div>
+                </div>
+                <div class="cap-body cap-vertical">
+                    <div class="cap-text">
+                        <p>Auto-generated every Sunday. Complete breakdown of the week — messages analyzed, rewrites
+                            accepted, cooling periods triggered, most stressed day, calmest day, and a personalized tip.
+                        </p>
+                    </div>
+                    <div class="cap-terminal">
+                        <div style="color: #f8ab10; margin-bottom:12px;">Week of Feb 23 – Mar 1</div>
+                        <div style="line-height: 1.8;">
+                            Messages analyzed: <span style="color: #4ade80;">84</span> &nbsp; High stress sent: <span
+                                style="color: #ff3b3b;">12</span><br>
+                            Rewrites accepted: <span style="color: #4ade80;">9 ✓</span> &nbsp; Cooling triggered: <span
+                                style="color: #f8ab10;">3</span><br>
+                            Most stressed: <span style="color: #ff3b3b;">Wednesday</span> &nbsp; Calmest: <span
+                                style="color: #4ade80;">Friday</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tone Translator -->
+            <div class="cap-card glass-card">
+                <div class="cap-header">
+                    <div class="cap-icon">🌍</div>
+                    <div class="cap-title-block">
+                        <h4>Tone Translator</h4>
+                        <span class="cap-tags">EXTENSION POPUP · BACKUP FEATURE</span>
+                    </div>
+                    <div class="cap-badge cap-badge-outline">IF TIME</div>
+                </div>
+                <div class="cap-body cap-vertical">
+                    <div class="cap-text">
+                        <p>Instead of one rewrite suggestion, show 3 different tone options — Professional, Direct, and
+                            Soft. User picks whichever fits the situation.</p>
+                    </div>
+                    <div class="cap-terminal">
+                        <div style="margin-bottom: 8px;"><span style="color: #888;">3 versions available:</span></div>
+                        <div style="margin-bottom: 6px;"><span style="color: #f8ab10;">A - Prof:</span> <span
+                                style="color: #4ade80;">"I'd like to revisit this."</span></div>
+                        <div style="margin-bottom: 6px;"><span style="color: #f8ab10;">B - Direct:</span> <span
+                                style="color: #4ade80;">"I disagree — let's discuss."</span></div>
+                        <div><span style="color: #f8ab10;">C - Soft:</span> <span style="color: #4ade80;">"I see this
+                                differently."</span></div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </section>
+
+
 
     <section id="install" style="text-align: center;">
-        <h2 class="section-title">Ready to install?</h2>
-        <p class="section-desc" style="margin: 0 auto 40px;">Follow these steps to load the unpacked extension into
-            Chrome Developer mode.</p>
+        <span class="section-tag">Get Started</span>
+        <h2 class="section-title">Download Your Extension</h2>
+        <p class="section-desc" style="margin: 0 auto 40px;">Follow these simple steps to activate your personal AI
+            emotional safety net.</p>
 
-        <div class="terminal">
+        <div class="install-steps">
+            <!-- Step 1 -->
+            <div class="glass-card step-card">
+                <div class="card-number">1</div>
+                <h3>Get Your Free API Key</h3>
+                <p>First, get your FREE Gemini API key from Google. It's completely free and requires no credit card.
+                </p>
+                <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer"
+                    class="fake-btn fb-outline" style="display:inline-block; margin-top: 20px; text-align: center;">→
+                    Get API Key Here</a>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="glass-card step-card">
+                <div class="card-number">2</div>
+                <h3>Enter Your Key</h3>
+                <p>Please paste your API key below. It will be securely embedded directly into your extension file.</p>
+
+                <div class="api-input-group" style="margin-top: 20px; position: relative;">
+                    <label
+                        style="display:block; margin-bottom: 8px; font-weight: 500; font-size: 14px; color: var(--text-muted);">Paste
+                        your Gemini API key here</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="password" id="apiKeyInput" placeholder="AIzaSy..." class="api-input" />
+                        <button id="toggleKeyBtn" class="fake-btn fb-outline"
+                            style="white-space: nowrap; width: 80px;">Show</button>
+                    </div>
+                    <div id="apiKeyError"
+                        style="color: var(--secondary); font-size: 13px; margin-top: 8px; display: none; text-align: left;">
+                        Invalid key.</div>
+                </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="glass-card step-card" style="text-align: center;">
+                <div class="card-number">3</div>
+                <h3>Download Extension</h3>
+                <p>We'll package your custom extension file instantly. Just click below to download.</p>
+                <button id="downloadBtn" class="cta-btn"
+                    style="margin-top: 25px; width: 100%; white-space: nowrap; font-size: 15px; padding: 18px 20px;">
+                    <span id="btnText">⬇ Download My RewordIt</span>
+                    <div id="btnSpinner" class="spinner" style="display: none;"></div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div id="installInstructions" class="terminal"
+            style="margin-top: 60px; display: none; opacity: 0; transition: opacity 0.5s ease;">
             <div class="term-header">
                 <div class="t-dot t-red"></div>
                 <div class="t-dot t-yel"></div>
                 <div class="t-dot t-grn"></div>
             </div>
             <div class="term-body" style="text-align: left;">
-                <span class="t-comment">// 1. Download source folder</span><br>
-                <span class="t-cmd">Navigate to <b>chrome://extensions/</b></span><br><br>
-                <span class="t-comment">// 2. Enable Developer Settings</span><br>
-                <span class="t-cmd">Toggle "Developer mode" in the top right.</span><br><br>
-                <span class="t-comment">// 3. Install Extension</span><br>
-                <span class="t-cmd">Click "Load unpacked" and select the RewordIt folder.</span><br><br>
-                <span class="t-cmd" style="color:#f8ab10;">> RewordIt successfully installed. All data remains
-                    local.</span>
+                <span class="t-comment">// STEPS TO INSTALL</span><br>
+                <span class="t-cmd">1. Extract the downloaded ZIP file (<span class="t-comment">Right-click > Extract
+                        All</span>)</span><br>
+                <span class="t-cmd">2. Open Chrome and navigate to <b>chrome://extensions/</b></span><br>
+                <span class="t-cmd">3. Turn ON "<b>Developer mode</b>" (switch in the top right corner)</span><br>
+                <span class="t-cmd">4. Click the "<b>Load unpacked</b>" button in the top left</span><br>
+                <span class="t-cmd">5. Select the extracted <b>rewordit-extension</b> folder</span><br>
+                <span class="t-cmd" style="color:#f8ab10;">6. Done! RewordIt is now active on all your websites.</span>
             </div>
         </div>
+
+        <p
+            style="text-align: center; color: var(--text-muted); font-size: 14px; margin-top: 60px; opacity: 0.8; line-height: 1.8;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                style="vertical-align: middle; margin-right: 5px;">
+                <path
+                    d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4">
+                </path>
+            </svg>
+            Your API key is never stored or sent to any server.<br>It is embedded directly into your extension on your
+            device only.
+        </p>
     </section>
 
     <footer>
@@ -1000,28 +1502,61 @@
             }
         });
 
-        // Custom Cursor Logic
+        // Premium Elastic Cursor Logic
         const cursorDot = document.getElementById('cursor-dot');
-        const cursorOutline = document.getElementById('cursor-outline');
+        const cursorFollower = document.getElementById('cursor-follower');
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
+        let dotX = mouseX, dotY = mouseY;
+        let followerX = mouseX, followerY = mouseY;
+        let prevFollowerX = followerX, prevFollowerY = followerY;
+        let isMoving = false;
 
         window.addEventListener('mousemove', function (e) {
-            cursorDot.style.left = e.clientX + 'px';
-            cursorDot.style.top = e.clientY + 'px';
-
-            cursorOutline.animate({
-                left: e.clientX + 'px',
-                top: e.clientY + 'px'
-            }, { duration: 500, fill: "forwards" });
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            isMoving = true;
         });
+
+        function animateCursor() {
+            // Immediate snap dot
+            dotX += (mouseX - dotX) * 0.4;
+            dotY += (mouseY - dotY) * 0.4;
+            cursorDot.style.transform = `translate(${dotX}px, ${dotY}px) translate(-50%, -50%)`;
+
+            // Elastic follower
+            followerX += (mouseX - followerX) * 0.15;
+            followerY += (mouseY - followerY) * 0.15;
+
+            // Velocity and Stretching calculations (Squash & Stretch principle)
+            let velX = followerX - prevFollowerX;
+            let velY = followerY - prevFollowerY;
+            let distance = Math.sqrt(velX * velX + velY * velY);
+            let angle = Math.atan2(velY, velX) * 180 / Math.PI;
+
+            // Cap the stretch scale so it doesn't distort too wildly
+            let scaleX = Math.min(1 + distance * 0.012, 1.8);
+            let scaleY = Math.max(1 - distance * 0.005, 0.7);
+
+            // If hovering, disable stretch for a clean circular highlight
+            if (document.body.classList.contains('cursor-hover')) {
+                scaleX = 1; scaleY = 1; angle = 0;
+            }
+
+            cursorFollower.style.transform =
+                `translate(${followerX}px, ${followerY}px) translate(-50%, -50%) rotate(${angle}deg) scale(${scaleX}, ${scaleY})`;
+
+            prevFollowerX = followerX;
+            prevFollowerY = followerY;
+
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
 
         const clickables = document.querySelectorAll('a, button, .glass-card, input, [role="button"], .fake-btn');
         clickables.forEach((el) => {
-            el.addEventListener('mouseenter', () => {
-                document.body.classList.add('cursor-hover');
-            });
-            el.addEventListener('mouseleave', () => {
-                document.body.classList.remove('cursor-hover');
-            });
+            el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+            el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
         });
 
         // 3D Tilt Effect on Cards
@@ -1049,6 +1584,109 @@
             card.addEventListener('mouseenter', () => {
                 card.style.transition = 'none'; // Disable transition for snappy move
             });
+        });
+
+        // Extension Download Logic
+        const apiKeyInput = document.getElementById('apiKeyInput');
+        const toggleKeyBtn = document.getElementById('toggleKeyBtn');
+        const apiKeyError = document.getElementById('apiKeyError');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const btnText = document.getElementById('btnText');
+        const btnSpinner = document.getElementById('btnSpinner');
+        const installInstructions = document.getElementById('installInstructions');
+
+        toggleKeyBtn.addEventListener('click', () => {
+            if (apiKeyInput.type === 'password') {
+                apiKeyInput.type = 'text';
+                toggleKeyBtn.textContent = 'Hide';
+            } else {
+                apiKeyInput.type = 'password';
+                toggleKeyBtn.textContent = 'Show';
+            }
+        });
+
+        const validateApiKey = (key) => {
+            if (!key) return "API key cannot be empty.";
+            if (!key.startsWith("AIza")) return 'API key must start with "AIza".';
+            if (key.length < 20) return "API key must be at least 20 characters long.";
+            return "";
+        };
+
+        downloadBtn.addEventListener('click', async () => {
+            const key = apiKeyInput.value.trim();
+            const errorMsg = validateApiKey(key);
+
+            if (errorMsg) {
+                apiKeyError.textContent = errorMsg;
+                apiKeyError.style.display = 'block';
+
+                // shake animation
+                downloadBtn.style.transform = 'translateX(5px)';
+                setTimeout(() => downloadBtn.style.transform = 'translateX(-5px)', 100);
+                setTimeout(() => downloadBtn.style.transform = 'translateX(5px)', 200);
+                setTimeout(() => downloadBtn.style.transform = 'translateX(0)', 300);
+                return;
+            }
+
+            apiKeyError.style.display = 'none';
+            btnText.style.display = 'none';
+            btnSpinner.style.display = 'inline-block';
+            downloadBtn.style.pointerEvents = 'none';
+
+            try {
+                // Fetch the ZIP
+                const response = await fetch('rewordit-extension.zip');
+                if (!response.ok) throw new Error("Could not find rewordit-extension.zip. Ensure it exists in the same folder.");
+
+                const arrayBuffer = await response.arrayBuffer();
+
+                // Load JSZip
+                const zip = await JSZip.loadAsync(arrayBuffer);
+
+                // Find and edit background.js
+                const bgFile = zip.file("background.js");
+                if (!bgFile) throw new Error("background.js not found inside the ZIP file.");
+
+                let bgContent = await bgFile.async("string");
+                bgContent = bgContent.replace("YOUR_API_KEY_HERE", key);
+                zip.file("background.js", bgContent);
+
+                // Generate new ZIP
+                const content = await zip.generateAsync({ type: "blob" });
+
+                // Trigger download
+                const url = URL.createObjectURL(content);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "rewordit-extension.zip";
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+                // Show success
+                btnText.textContent = "✔ Downloaded Successfully";
+                btnText.style.display = 'block';
+                btnSpinner.style.display = 'none';
+                downloadBtn.style.background = '#4ade80';
+                downloadBtn.style.color = '#000';
+
+                // Show install instructions
+                installInstructions.style.display = 'block';
+                setTimeout(() => {
+                    installInstructions.style.opacity = '1';
+                    installInstructions.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 50);
+
+            } catch (error) {
+                console.error(error);
+                apiKeyError.textContent = "Error: " + error.message;
+                apiKeyError.style.display = 'block';
+
+                btnText.style.display = 'block';
+                btnSpinner.style.display = 'none';
+                downloadBtn.style.pointerEvents = 'auto';
+            }
         });
     </script>
 </body>

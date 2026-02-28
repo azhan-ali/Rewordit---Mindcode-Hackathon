@@ -1,4 +1,4 @@
-const GEMINI_API_KEY = `add_here_your_gemini_key`;
+const GEMINI_API_KEY = `Put_your_gemini_key_here`;
 const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
 async function testAPI() {
@@ -28,10 +28,14 @@ Text to analyze: """${text}"""`;
                 })
             });
             const json = await response.json();
+            if (!json.candidates || !json.candidates[0].content) {
+                console.error(`Error for text ${i + 1}: missing candidates. JSON:`, JSON.stringify(json, null, 2));
+                continue;
+            }
             const res = JSON.parse(json.candidates[0].content.parts[0].text);
             console.log(`Text ${i + 1}: stress_score = ${res.stress_score}`);
         } catch (e) {
-            console.error(e);
+            console.error(`Catch error for text ${i + 1}:`, e);
         }
     }
 }

@@ -248,56 +248,65 @@
             border-top: 1px solid var(--glass-border);
         }
 
-        /* --- CUSTOM CURSOR --- */
-        body {
-            cursor: none;
-        }
-
+        /* --- PREMIUM ELASTIC CURSOR --- */
+        body,
         a,
         button,
+        input,
+        [role="button"],
         .stat-card,
         .chart-section,
-        #weekly-report,
-        input,
-        [role="button"] {
+        #weekly-report {
             cursor: none !important;
         }
 
-        .cursor-dot,
-        .cursor-outline {
+        #cursor-dot {
             position: fixed;
             top: 0;
             left: 0;
-            transform: translate(-50%, -50%);
-            border-radius: 50%;
-            z-index: 9999;
-            pointer-events: none;
-        }
-
-        .cursor-dot {
             width: 8px;
             height: 8px;
             background-color: var(--primary);
-            transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10000;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                height 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                opacity 0.3s;
         }
 
-        .cursor-outline {
-            width: 40px;
-            height: 40px;
-            border: 1px solid rgba(248, 171, 16, 0.5);
-            transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+        #cursor-follower {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 36px;
+            height: 36px;
+            border: 1.5px solid var(--primary);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform-origin: center;
+            box-shadow: 0 0 15px rgba(248, 171, 16, 0.2);
+            will-change: transform, width, height, border-width;
+            transition: width 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                height 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                border-width 0.3s, background-color 0.3s;
         }
 
-        .cursor-hover .cursor-dot {
-            transform: translate(-50%, -50%) scale(1.5);
-            background-color: var(--secondary);
-            box-shadow: 0 0 10px var(--secondary);
+        /* Hover States */
+        .cursor-hover #cursor-follower {
+            width: 60px;
+            height: 60px;
+            background-color: rgba(248, 171, 16, 0.15);
+            border-width: 0px;
+            box-shadow: 0 0 30px rgba(248, 171, 16, 0.4);
         }
 
-        .cursor-hover .cursor-outline {
-            transform: translate(-50%, -50%) scale(1.5);
-            border-color: rgba(255, 59, 59, 0.5);
-            background-color: rgba(255, 59, 59, 0.05);
+        .cursor-hover #cursor-dot {
+            width: 0px;
+            height: 0px;
+            opacity: 0;
         }
     </style>
 </head>
@@ -305,8 +314,8 @@
 <body>
 
     <!-- Custom Cursor -->
-    <div class="cursor-dot" id="cursor-dot"></div>
-    <div class="cursor-outline" id="cursor-outline"></div>
+    <div id="cursor-dot"></div>
+    <div id="cursor-follower"></div>
 
     <div class="bg-grid"></div>
 
@@ -618,28 +627,59 @@
 
         window.onload = attemptLoadData;
 
-        // Custom Cursor Logic
+        // Premium Elastic Cursor Logic
         const cursorDot = document.getElementById('cursor-dot');
-        const cursorOutline = document.getElementById('cursor-outline');
+        const cursorFollower = document.getElementById('cursor-follower');
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
+        let dotX = mouseX, dotY = mouseY;
+        let followerX = mouseX, followerY = mouseY;
+        let prevFollowerX = followerX, prevFollowerY = followerY;
 
         window.addEventListener('mousemove', function (e) {
-            cursorDot.style.left = e.clientX + 'px';
-            cursorDot.style.top = e.clientY + 'px';
-
-            cursorOutline.animate({
-                left: e.clientX + 'px',
-                top: e.clientY + 'px'
-            }, { duration: 500, fill: "forwards" });
+            mouseX = e.clientX;
+            mouseY = e.clientY;
         });
+
+        function animateCursor() {
+            // Immediate snap dot
+            dotX += (mouseX - dotX) * 0.4;
+            dotY += (mouseY - dotY) * 0.4;
+            cursorDot.style.transform = `translate(${dotX}px, ${dotY}px) translate(-50%, -50%)`;
+
+            // Elastic follower
+            followerX += (mouseX - followerX) * 0.15;
+            followerY += (mouseY - followerY) * 0.15;
+
+            // Velocity and Stretching calculations (Squash & Stretch principle)
+            let velX = followerX - prevFollowerX;
+            let velY = followerY - prevFollowerY;
+            let distance = Math.sqrt(velX * velX + velY * velY);
+            let angle = Math.atan2(velY, velX) * 180 / Math.PI;
+
+            // Cap the stretch scale
+            let scaleX = Math.min(1 + distance * 0.012, 1.8);
+            let scaleY = Math.max(1 - distance * 0.005, 0.7);
+
+            // If hovering, disable stretch for a clean circular highlight
+            if (document.body.classList.contains('cursor-hover')) {
+                scaleX = 1; scaleY = 1; angle = 0;
+            }
+
+            cursorFollower.style.transform =
+                `translate(${followerX}px, ${followerY}px) translate(-50%, -50%) rotate(${angle}deg) scale(${scaleX}, ${scaleY})`;
+
+            prevFollowerX = followerX;
+            prevFollowerY = followerY;
+
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
 
         const clickables = document.querySelectorAll('a, button, .stat-card, input, [role="button"], #weekly-report');
         clickables.forEach((el) => {
-            el.addEventListener('mouseenter', () => {
-                document.body.classList.add('cursor-hover');
-            });
-            el.addEventListener('mouseleave', () => {
-                document.body.classList.remove('cursor-hover');
-            });
+            el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+            el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
         });
     </script>
 </body>
