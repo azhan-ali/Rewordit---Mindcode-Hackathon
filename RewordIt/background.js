@@ -15,7 +15,20 @@ Output structure:
 {
   "stress_score": <number from 0 to 100 representing how angry or stressed the text is>,
   "emotions": ["array", "of", "strings", "describing", "emotions", "felt"],
-  "reworded": "<a calmer, more professional rewrite of the text if it's over 50 stress. If under 50, provide a slightly polished version.>"
+  "reworded_options": [
+    {
+       "tone": "Professional",
+       "text": "<A strictly professional, formal, and calm version>"
+    },
+    {
+       "tone": "Direct",
+       "text": "<A firm, concise, direct, but not rude version>"
+    },
+    {
+       "tone": "Soft",
+       "text": "<An empathetic, gentle, and highly collaborative version>"
+    }
+  ]
 }
 Text to analyze: """${text}"""`;
 

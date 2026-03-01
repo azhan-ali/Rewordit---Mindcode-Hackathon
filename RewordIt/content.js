@@ -272,33 +272,118 @@ function showPopup(data, originalText, record) {
 
     const emotionTags = (data.emotions || []).map(e => `<span style="display:inline-block;background:#e8eaed;border-radius:12px;padding:2px 8px;font-size:12px;margin:2px;">${e}</span>`).join('');
 
+    let optionsHtml = '';
+    const tones = data.reworded_options || [];
+
+    // Fallback if the new backend format isn't returned for some reason
+    if (tones.length === 0 && data.reworded) {
+        tones.push({ tone: "Calmer", text: data.reworded });
+    }
+
+    // Default primary suggestion (first one, usually Professional)
+    let defaultText = tones.length > 0 ? tones[0].text : "No suggestion available.";
+
+    // Generate HTML for the extra tones for the translator mode
+    tones.forEach((opt, idx) => {
+        let btnColor = idx === 0 ? '#1a73e8' : (idx === 1 ? '#e37400' : '#0f9d58');
+        optionsHtml += `
+            <div style="margin-bottom: 12px; border: 1px solid #e0e0e0; border-radius: 6px; overflow: hidden; background: #fff;">
+                <div style="background: #f8f9fa; padding: 6px 10px; font-weight: bold; font-size: 11px; color: ${btnColor}; border-bottom: 1px solid #e0e0e0; text-transform: uppercase;">Tone: ${opt.tone}</div>
+                <div style="padding: 10px; font-size: 13px; line-height: 1.4; color: #444;">${opt.text}</div>
+                <button class="rewordit-use-this-btn" data-text="${opt.text.replace(/"/g, '&quot;')}" style="width: 100%; background: ${btnColor}; color: #fff; border: none; padding: 8px; cursor: pointer; font-weight: bold; font-size: 12px; transition: opacity 0.2s;">Use This Version</button>
+            </div>
+        `;
+    });
+
     popupNode.innerHTML = `
-        <div style="font-weight:bold;margin-bottom:8px;font-size:14px;display:flex;justify-content:space-between;">
-            <span>RewordIt Suggestion</span>
-            <span style="color:#d93025;">Stress: ${data.stress_score}/100</span>
+        <div style="font-weight:bold;margin-bottom:8px;font-size:14px;display:flex;justify-content:space-between; align-items: center;">
+            <span style="display:flex; align-items: center; gap: 6px;">
+                <span id="rewordit-title-text">RewordIt Suggestion</span>
+            </span>
+            <span style="color:#d93025; font-size:12px; font-weight:bold;">Stress: ${data.stress_score}/100</span>
         </div>
+        
         <div style="width:100%;height:6px;background:#e8eaed;border-radius:3px;margin-bottom:8px;">
             <div style="width:${Math.min(data.stress_score, 100)}%;height:100%;background:#f9ab00;border-radius:3px;"></div>
         </div>
-        <div style="margin-bottom:8px;">${emotionTags}</div>
-        <div style="font-size:13px;background:#f8f9fa;padding:8px;border-radius:4px;margin-bottom:12px;"><strong>Reworded Option:</strong><br>${data.reworded}</div>
-        <div style="display:flex;gap:8px;">
-            <button id="rewordit-use-this" style="flex:1;background:#1a73e8;color:#fff;border:none;padding:6px 12px;border-radius:4px;cursor:pointer;font-weight:bold;">Use This</button>
-            <button id="rewordit-keep-mine" style="flex:1;background:#fff;color:#1a73e8;border:1px solid #1a73e8;padding:6px 12px;border-radius:4px;cursor:pointer;font-weight:bold;">Keep Mine</button>
+        <div style="margin-bottom:12px;">${emotionTags}</div>
+        
+        <!-- DEFAULT VIEW (Single Suggestion) -->
+        <div id="rewordit-default-view">
+            <div style="font-size:13px;background:#f8f9fa;padding:10px;border-radius:6px;margin-bottom:12px; border: 1px solid #e8eaed;">
+                <strong style="color:#1a73e8; font-size:12px; text-transform:uppercase;">Recommended:</strong><br>
+                <span style="color:#444; line-height:1.4; display:block; margin-top:4px;">${defaultText}</span>
+            </div>
+            
+            <div style="display:flex;gap:8px; margin-bottom: 12px;">
+                <button class="rewordit-use-this-btn" data-text="${defaultText.replace(/"/g, '&quot;')}" style="flex:1;background:#1a73e8;color:#fff;border:none;padding:8px 12px;border-radius:6px;cursor:pointer;font-weight:bold;font-size:13px;">Use This</button>
+            </div>
+        </div>
+
+        <!-- TONE TRANSLATOR TOGGLE -->
+        <div style="display:flex; align-items:center; justify-content:space-between; background: #f1f3f4; padding: 8px 12px; border-radius: 6px; margin-bottom: 12px;">
+            <div style="display:flex; align-items:center; gap: 6px;">
+                <span style="font-size: 16px;">✨</span>
+                <span style="font-size: 13px; font-weight: 600; color: #3c4043;">Tone Translator</span>
+            </div>
+            <label style="position: relative; display: inline-block; width: 34px; height: 20px;">
+                <input type="checkbox" id="rewordit-tone-toggle" style="opacity: 0; width: 0; height: 0;">
+                <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 20px;" id="rewordit-toggle-slider">
+                    <span style="position: absolute; content: ''; height: 16px; width: 16px; left: 2px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%;" id="rewordit-toggle-circle"></span>
+                </span>
+            </label>
+        </div>
+
+        <!-- TONE TRANSLATOR VIEW (Hidden initially) -->
+        <div id="rewordit-tones-container" style="display: none; max-height: 250px; overflow-y: auto; padding-right: 4px;">
+            ${optionsHtml}
+        </div>
+
+        <div>
+            <button id="rewordit-keep-mine" style="width:100%;background:#fff;color:#5f6368;border:1px solid #dadce0;padding:8px;border-radius:6px;cursor:pointer;font-weight:bold;font-size:13px;transition: background 0.2s;">Keep Original (Dismiss)</button>
         </div>
     `;
 
     document.body.appendChild(popupNode);
 
-    document.getElementById('rewordit-use-this').addEventListener('click', () => {
-        if (currentTarget) {
-            setTextToElement(currentTarget, data.reworded);
-            lastAnalyzedText = data.reworded; // prevent immediate re-analysis
+    // Toggle Logic
+    const toneToggle = document.getElementById('rewordit-tone-toggle');
+    const tonesContainer = document.getElementById('rewordit-tones-container');
+    const defaultView = document.getElementById('rewordit-default-view');
+    const titleText = document.getElementById('rewordit-title-text');
+    const sliderBg = document.getElementById('rewordit-toggle-slider');
+    const sliderCircle = document.getElementById('rewordit-toggle-circle');
+
+    toneToggle.addEventListener('change', (e) => {
+        if (e.target.checked) {
+            // Turn ON Tone Translator
+            tonesContainer.style.display = 'block';
+            defaultView.style.display = 'none';
+            titleText.innerText = "Tone Translator";
+            sliderBg.style.backgroundColor = "#0f9d58";
+            sliderCircle.style.transform = "translateX(14px)";
+        } else {
+            // Turn OFF Tone Translator
+            tonesContainer.style.display = 'none';
+            defaultView.style.display = 'block';
+            titleText.innerText = "RewordIt Suggestion";
+            sliderBg.style.backgroundColor = "#ccc";
+            sliderCircle.style.transform = "translateX(0)";
         }
-        record.rewrite_accepted = true;
-        updateLastRecord(record);
-        popupNode.remove();
-        popupNode = null;
+    });
+
+    document.querySelectorAll('.rewordit-use-this-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const selectedText = e.target.getAttribute('data-text');
+            if (currentTarget) {
+                setTextToElement(currentTarget, selectedText);
+                lastAnalyzedText = selectedText; // prevent immediate re-analysis
+            }
+            record.rewrite_accepted = true;
+            updateLastRecord(record);
+            popupNode.remove();
+            popupNode = null;
+        });
     });
 
     document.getElementById('rewordit-keep-mine').addEventListener('click', () => {
@@ -343,7 +428,14 @@ function showCoolingOverlay(data) {
     `;
 
     let timeLeft = 300; // 5 minutes (300 seconds)
-    const rewordedText = data && data.reworded ? data.reworded : "No suggestion available.";
+
+    // Safely extract the first calm tone (Professional) for the extreme popup
+    let rewordedText = "No suggestion available.";
+    if (data && data.reworded_options && data.reworded_options.length > 0) {
+        rewordedText = data.reworded_options[0].text;
+    } else if (data && data.reworded) {
+        rewordedText = data.reworded;
+    }
 
     coolingOverlay.innerHTML = `
         <div style="background:#1e1e24;padding:40px;border-radius:16px;text-align:center;max-width:550px;width:90%;box-shadow: 0 20px 50px rgba(0,0,0,0.8); border: 1px solid rgba(255,59,59,0.2);">
