@@ -58,6 +58,32 @@
             font-style: italic;
         }
 
+        .bg-glow {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 80vw;
+            height: 80vh;
+            background: radial-gradient(circle at center, rgba(46, 120, 255, 0.15), rgba(248, 171, 16, 0.05), transparent 60%);
+            transform: translate(-50%, -50%);
+            filter: blur(80px);
+            z-index: -2;
+            animation: pulse-glow 10s infinite alternate;
+            pointer-events: none;
+        }
+
+        @keyframes pulse-glow {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.8;
+            }
+
+            100% {
+                transform: translate(-50%, -50%) scale(1.1);
+                opacity: 1;
+            }
+        }
+
         .bg-grid {
             position: fixed;
             top: 0;
@@ -124,13 +150,32 @@
             border-radius: 16px;
             padding: 24px;
             backdrop-filter: blur(16px);
-            transition: transform 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at top right, rgba(255, 255, 255, 0.05), transparent 60%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
         }
 
         .stat-card:hover {
-            transform: translateY(-5px);
-            background: rgba(255, 255, 255, 0.05);
-            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-8px) scale(1.02);
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4), 0 0 15px rgba(255, 255, 255, 0.05);
+        }
+
+        .stat-card:hover::before {
+            opacity: 1;
         }
 
         .stat-label {
@@ -317,6 +362,7 @@
     <div id="cursor-dot"></div>
     <div id="cursor-follower"></div>
 
+    <div class="bg-glow"></div>
     <div class="bg-grid"></div>
 
     <header>
@@ -498,11 +544,26 @@
             let highCount = history.filter(h => h.stress_score > 85).length;
             let rewrites = history.filter(h => h.rewrite_accepted).length;
             let coolings = history.filter(h => h.cooling_triggered).length;
+            const animateValue = (id, start, end, duration) => {
+                const obj = document.getElementById(id);
+                let startTimestamp = null;
+                const step = (timestamp) => {
+                    if (!startTimestamp) startTimestamp = timestamp;
+                    const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                    obj.innerText = Math.floor(progress * (end - start) + start);
+                    if (progress < 1) {
+                        window.requestAnimationFrame(step);
+                    } else {
+                        obj.innerText = end;
+                    }
+                };
+                window.requestAnimationFrame(step);
+            }
 
-            document.getElementById('stat-total').innerText = total;
-            document.getElementById('stat-high').innerText = highCount;
-            document.getElementById('stat-rewrites').innerText = rewrites;
-            document.getElementById('stat-cooling').innerText = coolings;
+            animateValue('stat-total', 0, total, 1500);
+            animateValue('stat-high', 0, highCount, 1500);
+            animateValue('stat-rewrites', 0, rewrites, 1500);
+            animateValue('stat-cooling', 0, coolings, 1500);
 
             // Section 2: Chart Data Prep
             const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -551,25 +612,41 @@
                         label: 'Avg Stress Score',
                         data: chartScores,
                         backgroundColor: barColors,
-                        borderRadius: 6,
-                        borderSkipped: false
+                        borderRadius: 12,
+                        borderSkipped: false,
+                        barThickness: 'flex',
+                        maxBarThickness: 40
                     }]
                 },
                 options: {
                     responsive: true,
+                    animation: {
+                        y: {
+                            duration: 2000,
+                            easing: 'easeOutElastic'
+                        }
+                    },
                     plugins: {
-                        legend: { display: false }
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(0,0,0,0.8)',
+                            titleFont: { size: 14, family: 'Outfit' },
+                            bodyFont: { size: 16, weight: 'bold', family: 'Outfit' },
+                            padding: 12,
+                            cornerRadius: 8,
+                            displayColors: false,
+                        }
                     },
                     scales: {
                         y: {
                             beginAtZero: true,
                             max: 100,
-                            grid: { color: 'rgba(255,255,255,0.05)' },
-                            ticks: { color: '#a0a0a5' }
+                            grid: { color: 'rgba(255,255,255,0.05)', borderDash: [5, 5] },
+                            ticks: { color: '#a0a0a5', font: { family: 'Outfit' } }
                         },
                         x: {
                             grid: { display: false },
-                            ticks: { color: '#a0a0a5' }
+                            ticks: { color: '#a0a0a5', font: { family: 'Outfit', weight: 'bold' } }
                         }
                     }
                 }
@@ -651,12 +728,17 @@
                 const avg = Math.round(platScores[p].sum / platScores[p].count);
                 let indicator = avg > 70 ? '#ff3b3b' : (avg > 40 ? '#f8ab10' : '#4ade80');
                 platList.innerHTML += `
-                    <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); padding: 15px 20px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
-                        <div style="font-weight: 600; font-size: 15px; display: flex; align-items: center; gap: 10px;">
-                            <div style="width: 8px; height: 8px; border-radius: 50%; background: ${indicator};"></div>
-                            ${p}
+                    <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); padding: 15px 20px; border-radius: 12px; display: flex; flex-direction: column; gap: 10px; transition: transform 0.2s; cursor: none;" onmouseover="this.style.background='rgba(255,255,255,0.06)'; document.body.classList.add('cursor-hover');" onmouseout="this.style.background='rgba(255,255,255,0.03)'; document.body.classList.remove('cursor-hover');">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div style="font-weight: 600; font-size: 15px; display: flex; align-items: center; gap: 10px; text-transform: capitalize;">
+                                <div style="width: 10px; height: 10px; border-radius: 50%; background: ${indicator}; box-shadow: 0 0 10px ${indicator};"></div>
+                                ${p}
+                            </div>
+                            <div style="color: var(--text-muted); font-size: 14px;">Avg Score: <span style="color: ${indicator}; font-weight: bold; font-size: 16px;">${avg}</span></div>
                         </div>
-                        <div style="color: var(--text-muted); font-size: 14px;">avg score: <span style="color: ${indicator}; font-weight: bold;">${avg}/100</span></div>
+                        <div style="width: 100%; background: rgba(0,0,0,0.3); height: 6px; border-radius: 4px; overflow: hidden;">
+                            <div style="width: ${avg}%; height: 100%; background: ${indicator}; box-shadow: 0 0 10px ${indicator}; border-radius: 4px; transition: width 1.5s ease-out;"></div>
+                        </div>
                     </div>
                 `;
             });
