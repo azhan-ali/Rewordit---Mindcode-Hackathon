@@ -1331,10 +1331,32 @@
         <p>RewordIt analyzes your typing in real-time, catching high-stress messages before you press send. Cool down,
             retain your sanity, and preserve your relationships.</p>
 
-        <div class="hero-cta-wrapper">
+        <div class="hero-cta-wrapper" style="flex-direction: row; gap: 20px; flex-wrap: wrap; justify-content: center;">
             <a href="#install" class="cta-btn-premium">
                 <span class="cta-text">Install Extension Free</span>
                 <span class="cta-icon">→</span>
+            </a>
+            <a href="https://github.com/azhan-ali/Rewordit---Mindcode-Hackathon" target="_blank" class="cta-btn-premium"
+                style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: none;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round" style="margin-right: -4px;">
+                    <path
+                        d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22">
+                    </path>
+                </svg>
+                <span class="cta-text" style="color: #fff;">Open Source</span>
+                <style>
+                    /* Override premium gradient border to be grey for secondary button */
+                    .cta-btn-premium[href*="github"]::before {
+                        background: linear-gradient(90deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05));
+                        animation: none;
+                    }
+
+                    .cta-btn-premium[href*="github"]:hover {
+                        background: rgba(255, 255, 255, 0.1) !important;
+                        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+                    }
+                </style>
             </a>
         </div>
     </header>
