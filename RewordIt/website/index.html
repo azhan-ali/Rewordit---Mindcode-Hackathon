@@ -691,7 +691,7 @@
         /* --- CAPABILITIES GRID --- */
         .cap-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             gap: 30px;
         }
 
@@ -702,6 +702,15 @@
             /* resets glass-card padding for header/body split */
             background: rgba(20, 20, 22, 0.6) !important;
             border: 1px solid rgba(255, 255, 255, 0.08) !important;
+            border-radius: 20px;
+            overflow: hidden;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease, border-color 0.4s ease;
+        }
+
+        .cap-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+            border-color: rgba(255, 255, 255, 0.2) !important;
         }
 
         body.light-mode .cap-card {
@@ -709,8 +718,17 @@
             border-color: rgba(0, 0, 0, 0.08) !important;
         }
 
+        body.light-mode .cap-card:hover {
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.1);
+            border-color: rgba(0, 0, 0, 0.15) !important;
+        }
+
         .cap-full {
             grid-column: 1 / -1;
+        }
+
+        .cap-span-2 {
+            grid-column: span 2;
         }
 
         .cap-header {
@@ -825,12 +843,24 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
 
+        @media (max-width: 1100px) {
+            .cap-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .cap-span-2 {
+                grid-column: 1 / -1;
+                /* Make it full width on medium screens */
+            }
+        }
+
         @media (max-width: 900px) {
             .cap-grid {
                 grid-template-columns: 1fr;
             }
 
-            .cap-full {
+            .cap-full,
+            .cap-span-2 {
                 grid-column: auto;
             }
 
@@ -1367,145 +1397,156 @@
         <p class="section-desc">Invisible until you need it. RewordIt acts seamlessly in the background across your
             ecosystem.</p>
 
-        <!-- Core -->
-        <div class="cap-card cap-full glass-card">
-            <div class="cap-header">
-                <div class="cap-icon">🎯</div>
-                <div class="cap-title-block">
-                    <h4>Core — Real-time Tone Detection & AI Rewrites</h4>
-                    <span class="cap-tags">CHROME EXTENSION · ALL PLATFORMS · ALWAYS ON</span>
-                </div>
-                <div class="cap-badge">CORE</div>
-            </div>
-            <div class="cap-body">
-                <div class="cap-text">
-                    <p>RewordIt seamlessly monitors text boxes on WhatsApp, Gmail, Slack, and more. It analyzes your
-                        tone in real-time using Gemini AI. If high stress or anger is detected, a smart overlay appears
-                        instantly.</p>
-                    <p>You immediately see your stress score, detected emotions, and a calm, professional rewrite
-                        suggestion. Accept the calmer version with one click to communicate without regret.</p>
-                </div>
-                <div class="cap-terminal">
-                    <div style="color: #ff3b3b; margin-bottom: 12px;">⚠ Stress Detected – 78/100 <span
-                            style="color: #444;">-----------------------</span> Emotions:<br><span
-                            style="color: #f8ab10;">frustrated, accusatory</span></div>
-                    <div style="margin-bottom: 12px;">Calmer version: <span style="color: #4ade80;">"I'd love to align
-                            on this — can we find time to connect?"</span></div>
-                    <div><span style="color: #444;">------------------------------------------------</span> <span
-                            style="color: #4ade80;">[✓ Use This]</span> <span style="color: #ff3b3b;">[X Keep
-                            Mine]</span></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Cooling Period -->
-        <div class="cap-card glass-card">
-            <div class="cap-header">
-                <div class="cap-icon">⏳</div>
-                <div class="cap-title-block">
-                    <h4>Psychological Pause</h4>
-                    <span class="cap-tags">CIRCUIT BREAKER · TRIGGERS AT 85+ SCORE</span>
-                </div>
-            </div>
-            <div class="cap-body cap-vertical">
-                <div class="cap-text">
-                    <p>A mandatory safety net for your worst moments. If your stress hits critical levels (>85) and you
-                        stubbornly click "Send Anyway", RewordIt enforces a 15-second lockdown. This psychological pause
-                        forces you to breathe and reconsider.</p>
-                </div>
-                <div class="cap-terminal">
-                    <div style="margin-bottom: 12px;"><span style="color: #ff3b3b;">🔴 HIGH STRESS – 91/100</span>
-                        <span style="color: #888;">Message sending in: <span style="color: #f8ab10;">00:15</span></span>
+        <div class="cap-grid">
+            <!-- Core -->
+            <div class="cap-card cap-span-2 glass-card">
+                <div class="cap-header">
+                    <div class="cap-icon">🎯</div>
+                    <div class="cap-title-block">
+                        <h4>Core — Real-time Tone Detection & AI Rewrites</h4>
+                        <span class="cap-tags">CHROME EXTENSION · ALL PLATFORMS · ALWAYS ON</span>
                     </div>
-                    <div><span style="color: #f8ab10;">███████░░░░░░░░░░░░</span> <span style="color: #4ade80;">[Edit
-                            Message]</span></div>
+                    <div class="cap-badge">CORE</div>
                 </div>
-            </div>
-        </div>
-
-        <!-- Tone Translator -->
-        <div class="cap-card glass-card">
-            <div class="cap-header">
-                <div class="cap-icon">🌍</div>
-                <div class="cap-title-block">
-                    <h4>Tone Translator Mode</h4>
-                    <span class="cap-tags">ON-DEMAND TOGGLE · MULTIPLE STYLES</span>
-                </div>
-                <div class="cap-badge cap-badge-outline" style="border-color: #2e78ff; color: #2e78ff;">NEW</div>
-            </div>
-            <div class="cap-body cap-vertical">
-                <div class="cap-text">
-                    <p>Not just for calming down! Toggle the Tone Translator icon on any text box to completely rewrite
-                        your drafts into different styles—like Professional, Direct, or Chill—matching your intended
-                        audience perfectly.</p>
-                </div>
-                <div class="cap-terminal">
-                    <div style="margin-bottom: 8px;"><span style="color: #888;">Translating Draft...</span></div>
-                    <div style="margin-bottom: 6px;"><span style="color: #2e78ff;">[Professional]:</span> <span
-                            style="color: #4ade80;">"Could we review the timeline?"</span></div>
-                    <div style="margin-bottom: 6px;"><span style="color: #ff3b3b;">[Direct]:</span> <span
-                            style="color: #4ade80;">"This deadline is unachievable."</span></div>
-                    <div><span style="color: #f8ab10;">[Chill]:</span> <span style="color: #4ade80;">"Hey, can we push
-                            this back a bit?"</span></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Mood Timeline -->
-        <div class="cap-card glass-card">
-            <div class="cap-header">
-                <div class="cap-icon">📈</div>
-                <div class="cap-title-block">
-                    <h4>Premium Analytics Dashboard</h4>
-                    <span class="cap-tags">SECURE LOCAL DASHBOARD · PLATFORM BREAKDOWN</span>
-                </div>
-            </div>
-            <div class="cap-body cap-vertical">
-                <div class="cap-text">
-                    <p>Access an immersive, glowing dashboard that tracks your emotional state over a 7-day timeline.
-                        Uncover your "danger zones" with automated platform progress bars indicating where you're most
-                        stressed (e.g., WhatsApp vs. Slack).</p>
-                </div>
-                <div class="cap-terminal">
-                    <div style="display:flex; justify-content: space-between; margin-bottom:12px;">
-                        <span>Mon <span style="color: #ff3b3b;">████</span> 78</span>
-                        <span>Tue <span style="color: #4ade80;">██</span> 42</span>
-                        <span>Wed <span style="color: #ff3b3b;">█████</span> 95 ⚠</span>
+                <div class="cap-body">
+                    <div class="cap-text">
+                        <p>RewordIt seamlessly monitors text boxes on WhatsApp, Gmail, Slack, and more. It analyzes your
+                            tone in real-time using Gemini AI. If high stress or anger is detected, a smart overlay
+                            appears
+                            instantly.</p>
+                        <p>You immediately see your stress score, detected emotions, and a calm, professional rewrite
+                            suggestion. Accept the calmer version with one click to communicate without regret.</p>
                     </div>
-                    <div>
-                        <span>[Whatsapp] <span style="color: #f8ab10;">████░░░</span> 55</span>
+                    <div class="cap-terminal">
+                        <div style="color: #ff3b3b; margin-bottom: 12px;">⚠ Stress Detected – 78/100 <span
+                                style="color: #444;">-----------------------</span> Emotions:<br><span
+                                style="color: #f8ab10;">frustrated, accusatory</span></div>
+                        <div style="margin-bottom: 12px;">Calmer version: <span style="color: #4ade80;">"I'd love to
+                                align
+                                on this — can we find time to connect?"</span></div>
+                        <div><span style="color: #444;">------------------------------------------------</span> <span
+                                style="color: #4ade80;">[✓ Use This]</span> <span style="color: #ff3b3b;">[X Keep
+                                Mine]</span></div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Weekly Report -->
-        <div class="cap-card glass-card">
-            <div class="cap-header">
-                <div class="cap-icon">📊</div>
-                <div class="cap-title-block">
-                    <h4>Weekly Mental Health Report</h4>
-                    <span class="cap-tags">AUTO EVERY SUNDAY · PERSONALIZED AI TIPS</span>
+            <!-- Cooling Period -->
+            <div class="cap-card glass-card">
+                <div class="cap-header">
+                    <div class="cap-icon">⏳</div>
+                    <div class="cap-title-block">
+                        <h4>Psychological Pause</h4>
+                        <span class="cap-tags">CIRCUIT BREAKER · TRIGGERS AT 85+ SCORE</span>
+                    </div>
                 </div>
-            </div>
-            <div class="cap-body cap-vertical">
-                <div class="cap-text">
-                    <p>Every Sunday, receive a comprehensive breakdown of your digital well-being. View your calmest
-                        days, rewrite acceptance rates, and get AI-generated personalized tips based on your
-                        communication habits.</p>
-                </div>
-                <div class="cap-terminal">
-                    <div style="color: #f8ab10; margin-bottom:12px;">End of Week Summary</div>
-                    <div style="line-height: 1.8;">
-                        Most stressed: <span style="color: #ff3b3b;">Wednesday</span> &nbsp; Calmest: <span
-                            style="color: #4ade80;">Friday</span><br>
-                        Rewrite Rate: <span style="color: #4ade80;">83% ✓</span> &nbsp; Cooling saved you: <span
-                            style="color: #f8ab10;">5 times</span><br>
-                        <span style="color: #888;">Tip: Consider taking longer afternoon breaks.</span>
+                <div class="cap-body cap-vertical">
+                    <div class="cap-text">
+                        <p>A mandatory safety net for your worst moments. If your stress hits critical levels (>85) and
+                            you
+                            stubbornly click "Send Anyway", RewordIt enforces a 15-second lockdown. This psychological
+                            pause
+                            forces you to breathe and reconsider.</p>
+                    </div>
+                    <div class="cap-terminal">
+                        <div style="margin-bottom: 12px;"><span style="color: #ff3b3b;">🔴 HIGH STRESS – 91/100</span>
+                            <span style="color: #888;">Message sending in: <span
+                                    style="color: #f8ab10;">00:15</span></span>
+                        </div>
+                        <div><span style="color: #f8ab10;">███████░░░░░░░░░░░░</span> <span
+                                style="color: #4ade80;">[Edit
+                                Message]</span></div>
                     </div>
                 </div>
             </div>
-        </div>
+
+            <!-- Tone Translator -->
+            <div class="cap-card glass-card">
+                <div class="cap-header">
+                    <div class="cap-icon">🌍</div>
+                    <div class="cap-title-block">
+                        <h4>Tone Translator Mode</h4>
+                        <span class="cap-tags">ON-DEMAND TOGGLE · MULTIPLE STYLES</span>
+                    </div>
+                    <div class="cap-badge cap-badge-outline" style="border-color: #2e78ff; color: #2e78ff;">NEW</div>
+                </div>
+                <div class="cap-body cap-vertical">
+                    <div class="cap-text">
+                        <p>Not just for calming down! Toggle the Tone Translator icon on any text box to completely
+                            rewrite
+                            your drafts into different styles—like Professional, Direct, or Chill—matching your intended
+                            audience perfectly.</p>
+                    </div>
+                    <div class="cap-terminal">
+                        <div style="margin-bottom: 8px;"><span style="color: #888;">Translating Draft...</span></div>
+                        <div style="margin-bottom: 6px;"><span style="color: #2e78ff;">[Professional]:</span> <span
+                                style="color: #4ade80;">"Could we review the timeline?"</span></div>
+                        <div style="margin-bottom: 6px;"><span style="color: #ff3b3b;">[Direct]:</span> <span
+                                style="color: #4ade80;">"This deadline is unachievable."</span></div>
+                        <div><span style="color: #f8ab10;">[Chill]:</span> <span style="color: #4ade80;">"Hey, can we
+                                push
+                                this back a bit?"</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mood Timeline -->
+            <div class="cap-card glass-card">
+                <div class="cap-header">
+                    <div class="cap-icon">📈</div>
+                    <div class="cap-title-block">
+                        <h4>Premium Analytics Dashboard</h4>
+                        <span class="cap-tags">SECURE LOCAL DASHBOARD · PLATFORM BREAKDOWN</span>
+                    </div>
+                </div>
+                <div class="cap-body cap-vertical">
+                    <div class="cap-text">
+                        <p>Access an immersive, glowing dashboard that tracks your emotional state over a 7-day
+                            timeline.
+                            Uncover your "danger zones" with automated platform progress bars indicating where you're
+                            most
+                            stressed (e.g., WhatsApp vs. Slack).</p>
+                    </div>
+                    <div class="cap-terminal">
+                        <div style="display:flex; justify-content: space-between; margin-bottom:12px;">
+                            <span>Mon <span style="color: #ff3b3b;">████</span> 78</span>
+                            <span>Tue <span style="color: #4ade80;">██</span> 42</span>
+                            <span>Wed <span style="color: #ff3b3b;">█████</span> 95 ⚠</span>
+                        </div>
+                        <div>
+                            <span>[Whatsapp] <span style="color: #f8ab10;">████░░░</span> 55</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Weekly Report -->
+            <div class="cap-card glass-card">
+                <div class="cap-header">
+                    <div class="cap-icon">📊</div>
+                    <div class="cap-title-block">
+                        <h4>Weekly Mental Health Report</h4>
+                        <span class="cap-tags">AUTO EVERY SUNDAY · PERSONALIZED AI TIPS</span>
+                    </div>
+                </div>
+                <div class="cap-body cap-vertical">
+                    <div class="cap-text">
+                        <p>Every Sunday, receive a comprehensive breakdown of your digital well-being. View your calmest
+                            days, rewrite acceptance rates, and get AI-generated personalized tips based on your
+                            communication habits.</p>
+                    </div>
+                    <div class="cap-terminal">
+                        <div style="color: #f8ab10; margin-bottom:12px;">End of Week Summary</div>
+                        <div style="line-height: 1.8;">
+                            Most stressed: <span style="color: #ff3b3b;">Wednesday</span> &nbsp; Calmest: <span
+                                style="color: #4ade80;">Friday</span><br>
+                            Rewrite Rate: <span style="color: #4ade80;">83% ✓</span> &nbsp; Cooling saved you: <span
+                                style="color: #f8ab10;">5 times</span><br>
+                            <span style="color: #888;">Tip: Consider taking longer afternoon breaks.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
         </div>
     </section>
