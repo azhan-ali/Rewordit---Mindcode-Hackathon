@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
-    chrome.storage.local.get(['rewordHistory'], (result) => {
-        const historyData = result.rewordHistory || [];
+    chrome.storage.local.get(['messages'], (result) => {
+        const historyData = result.messages || [];
         const container = document.getElementById('history');
 
         if (historyData.length === 0) {

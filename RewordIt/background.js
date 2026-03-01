@@ -78,3 +78,21 @@ Text to analyze: """${text}"""`;
         throw new Error('Invalid JSON response from Gemini');
     }
 }
+
+chrome.runtime.onMessageExternal.addListener(function (request, sender, sendResponse) {
+    if (request.type === 'getData') {
+        chrome.storage.local.get(['messages'], function (result) {
+            sendResponse({
+                success: true,
+                messages: result.messages || []
+            });
+        });
+        return true;
+    }
+    if (request.type === 'clearData') {
+        chrome.storage.local.set({ messages: [] }, function () {
+            sendResponse({ success: true });
+        });
+        return true;
+    }
+});

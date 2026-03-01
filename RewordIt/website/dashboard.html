@@ -327,75 +327,139 @@
         </div>
     </header>
 
-    <div id="weekly-report">
-        <h2 style="font-size: 32px; margin-bottom: 10px;">Weekly Mental Health Report</h2>
-        <p style="color: var(--text-muted);">It's Sunday! Here's a breakdown of your communication patterns over the
-            past 7 days.</p>
+    <!-- Demo Banner -->
+    <div id="demo-banner"
+        style="background: rgba(248, 171, 16, 0.1); border: 1px solid var(--primary); color: var(--primary); padding: 12px; text-align: center; border-radius: 8px; margin-bottom: 30px; display: none; font-weight: 500;">
+        📊 Demo Mode — Install extension to see your real data
+    </div>
 
-        <div class="report-grid">
-            <div class="report-item">
-                <div class="r-label">Most Stressed Day</div>
-                <div class="r-val" id="wr-stressed-day">--</div>
-            </div>
-            <div class="report-item">
-                <div class="r-label">Calmest Day</div>
-                <div class="r-val" id="wr-calm-day">--</div>
-            </div>
-            <div class="report-item">
-                <div class="r-label">Rewrite Rate</div>
-                <div class="r-val" id="wr-rewrite-rate">--%</div>
-            </div>
-            <div class="report-item">
-                <div class="r-label">Cooling Triggered</div>
-                <div class="r-val" id="wr-cooling">-- times</div>
-            </div>
-            <div class="report-item">
-                <div class="r-label">Main Platform</div>
-                <div class="r-val" id="wr-platform">--</div>
-            </div>
-            <div class="report-item">
-                <div class="r-label">Avg Weekly Score</div>
-                <div class="r-val" id="wr-avg-score">--/100</div>
-            </div>
-        </div>
-        <div class="tip-box" id="wr-tip">
-            <strong>Personalized Tip:</strong> <span>Analyzing data...</span>
+    <!-- Connection Setup (Section A) -->
+    <div id="connection-setup" class="glass-card"
+        style="margin-bottom: 60px; padding: 40px; text-align: center; display: none;">
+        <h2 style="font-size: 28px; margin-bottom: 15px;">🔌 Connect Your RewordIt Extension</h2>
+        <p
+            style="color: var(--text-muted); margin-bottom: 20px; max-width: 600px; margin-left: auto; margin-right: auto;">
+            To see your real data, paste your Extension ID below. You only need to do this once.
+        </p>
+        <div
+            style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 20px; max-width: 500px; margin: 0 auto; text-align: left; border: 1px solid var(--glass-border);">
+            <div style="font-size: 14px; margin-bottom: 10px;"><strong>How to find it:</strong></div>
+            <ol style="margin-left: 20px; color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">
+                <li>Open <code
+                        style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px;">chrome://extensions/</code>
+                </li>
+                <li>Find <strong>RewordIt</strong></li>
+                <li>Copy the ID shown below its name</li>
+            </ol>
+            <input type="text" id="ext-id-input" placeholder="e.g. abcdefghijklmnopqrstuvwxyz"
+                style="width: 100%; padding: 12px 15px; border-radius: 8px; border: 1px solid var(--glass-border); background: rgba(255,255,255,0.05); color: #fff; font-family: 'Space Mono', monospace; font-size: 14px; margin-bottom: 15px; outline: none;">
+            <button id="connect-btn"
+                style="width: 100%; background: var(--primary); color: #000; font-weight: bold; border: none; padding: 14px; border-radius: 8px; cursor: pointer; font-family: 'Outfit', sans-serif; font-size: 16px; margin-bottom: 15px; transition: opacity 0.2s;">
+                <span id="connect-btn-text">Connect My Dashboard</span>
+                <span id="connect-btn-spinner" class="spinner"
+                    style="display:none; width: 16px; height: 16px; border: 2px solid #000; border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto;"></span>
+            </button>
+            <button id="demo-btn"
+                style="width: 100%; background: transparent; color: var(--text-muted); font-weight: 500; border: 1px solid var(--glass-border); padding: 10px; border-radius: 8px; cursor: pointer; font-family: 'Outfit', sans-serif; font-size: 14px; transition: background 0.2s;">Or
+                View Demo Dashboard →</button>
+            <div id="conn-error"
+                style="color: var(--secondary); font-size: 13px; margin-top: 10px; display: none; text-align: center;">
+                Extension not found. Make sure it is installed and the ID is correct.</div>
         </div>
     </div>
 
-    <!-- Section 1 -->
-    <div class="stats-grid">
-        <div class="stat-card">
-            <div class="stat-label">Messages Analyzed</div>
-            <div class="stat-value" id="stat-total">0</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-label">High Stress (>85)</div>
-            <div class="stat-value" id="stat-high" style="color: var(--secondary);">0</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-label">Rewrites Accepted</div>
-            <div class="stat-value" id="stat-rewrites" style="color: #4ade80;">0</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-label">Cooling Periods</div>
-            <div class="stat-value" id="stat-cooling" style="color: var(--primary);">0</div>
-        </div>
-    </div>
+    <style>
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
 
-    <!-- Section 2 -->
-    <div class="chart-section">
-        <div class="chart-header">
-            <h2>Mood Timeline</h2>
-            <p style="color: var(--text-muted);">Average stress score over the last 7 days.</p>
+    <div id="dashboard-content" style="display: none;">
+
+        <div id="weekly-report">
+            <h2 style="font-size: 32px; margin-bottom: 10px;">Weekly Mental Health Report</h2>
+            <p style="color: var(--text-muted);">It's Sunday! Here's a breakdown of your communication patterns over the
+                past 7 days.</p>
+
+            <div class="report-grid">
+                <div class="report-item">
+                    <div class="r-label">Most Stressed Day</div>
+                    <div class="r-val" id="wr-stressed-day">--</div>
+                </div>
+                <div class="report-item">
+                    <div class="r-label">Calmest Day</div>
+                    <div class="r-val" id="wr-calm-day">--</div>
+                </div>
+                <div class="report-item">
+                    <div class="r-label">Rewrite Rate</div>
+                    <div class="r-val" id="wr-rewrite-rate">--%</div>
+                </div>
+                <div class="report-item">
+                    <div class="r-label">Cooling Triggered</div>
+                    <div class="r-val" id="wr-cooling">-- times</div>
+                </div>
+                <div class="report-item">
+                    <div class="r-label">Main Platform</div>
+                    <div class="r-val" id="wr-platform">--</div>
+                </div>
+                <div class="report-item">
+                    <div class="r-label">Avg Weekly Score</div>
+                    <div class="r-val" id="wr-avg-score">--/100</div>
+                </div>
+            </div>
+            <div class="tip-box" id="wr-tip">
+                <strong>Personalized Tip:</strong> <span>Analyzing data...</span>
+            </div>
         </div>
 
-        <canvas id="moodChart" height="100"></canvas>
-
-        <div class="chart-insight" id="auto-insight">
-            Generating insight...
+        <!-- Section 1 -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Messages Analyzed</div>
+                <div class="stat-value" id="stat-total">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">High Stress (>85)</div>
+                <div class="stat-value" id="stat-high" style="color: var(--secondary);">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Rewrites Accepted</div>
+                <div class="stat-value" id="stat-rewrites" style="color: #4ade80;">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Cooling Periods</div>
+                <div class="stat-value" id="stat-cooling" style="color: var(--primary);">0</div>
+            </div>
         </div>
-    </div>
+
+        <!-- Section 2 -->
+        <div class="chart-section">
+            <div class="chart-header">
+                <h2>Mood Timeline</h2>
+                <p style="color: var(--text-muted);">Average stress score over the last 7 days.</p>
+            </div>
+
+            <canvas id="moodChart" height="100"></canvas>
+
+            <div class="chart-insight" id="auto-insight">
+                Generating insight...
+            </div>
+        </div>
+
+        <!-- Section E: Platform Breakdown -->
+        <div class="chart-section" id="platform-breakdown">
+            <div class="chart-header">
+                <h2>Platform Breakdown</h2>
+                <p style="color: var(--text-muted);">Where you write the most stressed messages.</p>
+            </div>
+            <div id="platform-list" style="display: flex; flex-direction: column; gap: 15px;">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+
+    </div> <!-- End Dashboard Content -->
 
     <footer>
         <p>🔒 All data is stored locally. Nothing leaves your device.</p>
@@ -565,65 +629,117 @@
                 // Tip
                 const tipEl = document.querySelector('#wr-tip span');
                 if (coolings > 3) tipEl.innerText = "You experienced multiple critical stress events. Consider reviewing your workload or taking longer breaks.";
-                else if (rewriteRate > 50) tipEl.innerText = "Great job accepting rewrites! You are actively choosing calmer communication.";
+                else if (rewriteRate > 50) tipEl.innerText = `Great job accepting rewrites! You are actively choosing calmer communication (${rewriteRate}% of the time).`;
+                else if (maxVal > -1 && maxScoreDay) tipEl.innerText = `You're consistently stressed on ${maxScoreDay}s. Try avoiding important emails in the afternoon on this day.`;
                 else if (weekAvg > 70) tipEl.innerText = "Overall stress was high this week. Disconnecting over the weekend is highly recommended.";
-                else tipEl.innerText = "A relatively calm week! Keep up the good communication habits.";
+                else tipEl.innerText = "Keep going — every rewrite is a better conversation.";
+            }
+
+            // Platform Breakdown List
+            const platList = document.getElementById('platform-list');
+            platList.innerHTML = '';
+            const platScores = {};
+            history.forEach(h => {
+                if (!platScores[h.platform]) platScores[h.platform] = { sum: 0, count: 0 };
+                platScores[h.platform].sum += h.stress_score;
+                platScores[h.platform].count++;
+            });
+
+            const sortedPlats = Object.keys(platScores).sort((a, b) => (platScores[b].sum / platScores[b].count) - (platScores[a].sum / platScores[a].count));
+
+            sortedPlats.forEach(p => {
+                const avg = Math.round(platScores[p].sum / platScores[p].count);
+                let indicator = avg > 70 ? '#ff3b3b' : (avg > 40 ? '#f8ab10' : '#4ade80');
+                platList.innerHTML += `
+                    <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); padding: 15px 20px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+                        <div style="font-weight: 600; font-size: 15px; display: flex; align-items: center; gap: 10px;">
+                            <div style="width: 8px; height: 8px; border-radius: 50%; background: ${indicator};"></div>
+                            ${p}
+                        </div>
+                        <div style="color: var(--text-muted); font-size: 14px;">avg score: <span style="color: ${indicator}; font-weight: bold;">${avg}/100</span></div>
+                    </div>
+                `;
+            });
+            if (sortedPlats.length === 0) {
+                platList.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 20px;">No platform data available yet. Start typing to see it here!</div>';
             }
         };
 
         // Attempt Connection
         const attemptLoadData = () => {
-            let loaded = false;
+            const savedId = localStorage.getItem('rewordit_extension_id');
+            const demoBanner = document.getElementById('demo-banner');
+            const connSetup = document.getElementById('connection-setup');
+            const dashContent = document.getElementById('dashboard-content');
 
-            try {
-                // Try sending message if running as a chrome-extension page or web page with permission
-                const req = EXTENSION_ID !== 'YOUR_EXTENSION_ID_HERE'
-                    ? chrome.runtime.sendMessage(EXTENSION_ID, { type: 'getData' })
-                    : (chrome.runtime && chrome.runtime.sendMessage ? chrome.runtime.sendMessage({ type: 'getData' }) : Promise.reject());
-
-                // Fallback for callback based APIs
-                if (chrome.runtime && chrome.runtime.sendMessage && !chrome.runtime.sendMessage.then) {
-                    chrome.runtime.sendMessage({ action: 'get_history' }, (response) => {
-                        if (chrome.runtime.lastError || !response) {
-                            handleFallback();
-                        } else {
-                            handleSuccess(response.data || response);
-                        }
-                    });
-                    return;
-                }
-
-                req.then(response => {
-                    handleSuccess(response.data || response);
-                }).catch(e => {
-                    handleFallback();
-                });
-
-            } catch (e) {
-                handleFallback();
+            function showConnectionSetup() {
+                connSetup.style.display = 'block';
+                dashContent.style.display = 'none';
+                demoBanner.style.display = 'none';
             }
 
-            function handleSuccess(data) {
-                if (Array.isArray(data)) {
-                    document.getElementById('conn-text').innerText = "Live Extension Data";
-                    document.getElementById('conn-status').classList.remove('demo');
-                    processData(data);
-                } else {
-                    handleFallback();
-                }
-            }
+            function showDemoMode() {
+                connSetup.style.display = 'none';
+                dashContent.style.display = 'block';
+                demoBanner.style.display = 'block';
 
-            function handleFallback() {
                 const badge = document.getElementById('conn-status');
                 document.getElementById('conn-text').innerText = "Demo Data (Extension Not Linked)";
                 badge.classList.add('demo');
                 processData(generateDemoData());
             }
-        };
 
-        // If today is NOT Sunday but user loaded the page, let's force show it so you can see the feature for demo purposes
-        // By removing this block, the report will ONLY show on Sundays.
-        document.getElementById('weekly-report').style.display = 'block';
+            if (savedId) {
+                chrome.runtime.sendMessage(savedId, { type: 'getData' }, (response) => {
+                    if (chrome.runtime.lastError || !response || !response.success) {
+                        showDemoMode(); // Extension not found or communication failed
+                    } else {
+                        dashContent.style.display = 'block';
+                        connSetup.style.display = 'none';
+                        demoBanner.style.display = 'none';
+                        document.getElementById('conn-text').innerText = "Live Extension Data";
+                        document.getElementById('conn-status').classList.remove('demo');
+                        processData(response.messages || []);
+                    }
+                });
+            } else {
+                showConnectionSetup();
+            }
+
+            // Bind Setup Buttons
+            document.getElementById('connect-btn').addEventListener('click', () => {
+                const idInput = document.getElementById('ext-id-input').value.trim();
+                const err = document.getElementById('conn-error');
+                if (!idInput) {
+                    err.innerText = "Please enter an Extension ID";
+                    err.style.display = 'block';
+                    return;
+                }
+
+                const btnText = document.getElementById('connect-btn-text');
+                const btnSpinner = document.getElementById('connect-btn-spinner');
+
+                btnText.style.display = 'none';
+                btnSpinner.style.display = 'block';
+                err.style.display = 'none';
+
+                chrome.runtime.sendMessage(idInput, { type: 'getData' }, (response) => {
+                    btnText.style.display = 'inline';
+                    btnSpinner.style.display = 'none';
+                    if (chrome.runtime.lastError || !response || !response.success) {
+                        err.innerText = "Extension not found. Make sure it is installed and the ID is correct.";
+                        err.style.display = 'block';
+                    } else {
+                        localStorage.setItem('rewordit_extension_id', idInput);
+                        window.location.reload();
+                    }
+                });
+            });
+
+            document.getElementById('demo-btn').addEventListener('click', () => {
+                showDemoMode();
+            });
+        };
 
         window.onload = attemptLoadData;
 

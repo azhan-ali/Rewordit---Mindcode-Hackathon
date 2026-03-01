@@ -205,10 +205,13 @@ function handleAnalysisResult(data, originalText, platform) {
         rewrite_accepted: false,
         cooling_triggered: data.stress_score > 85
     };
-    chrome.storage.local.get(['rewordHistory'], (storage) => {
-        let history = storage.rewordHistory || [];
+    chrome.storage.local.get(['messages'], (storage) => {
+        let history = storage.messages || [];
         history.push(record);
-        chrome.storage.local.set({ rewordHistory: history });
+        if (history.length > 1000) {
+            history = history.slice(history.length - 1000);
+        }
+        chrome.storage.local.set({ messages: history });
     });
 
     if (data.stress_score > 85) {
@@ -394,11 +397,11 @@ function showPopup(data, originalText, record) {
 }
 
 function updateLastRecord(record) {
-    chrome.storage.local.get(['rewordHistory'], (storage) => {
-        let history = storage.rewordHistory || [];
+    chrome.storage.local.get(['messages'], (storage) => {
+        let history = storage.messages || [];
         if (history.length > 0) {
             history[history.length - 1] = record;
-            chrome.storage.local.set({ rewordHistory: history });
+            chrome.storage.local.set({ messages: history });
         }
     });
 }
