@@ -216,7 +216,7 @@ function handleAnalysisResult(data, originalText, platform) {
             popupNode.remove();
             popupNode = null;
         }
-        activateCoolingPeriod(currentTarget);
+        activateCoolingPeriod(currentTarget, data);
     } else if (data.stress_score > 50) {
         showPopup(data, originalText, record);
     }
@@ -319,38 +319,51 @@ function updateLastRecord(record) {
 }
 
 // --- Cooling Period Interception ---
-function activateCoolingPeriod(target) {
+function activateCoolingPeriod(target, data) {
     if (isCoolingDown) return;
     isCoolingDown = true;
-    showCoolingOverlay();
+    showCoolingOverlay(data);
 }
 
-function showCoolingOverlay() {
+function showCoolingOverlay(data) {
     if (coolingOverlay) return;
 
     coolingOverlay = document.createElement('div');
     coolingOverlay.style.cssText = `
         position: fixed;
         top: 0; left: 0; right: 0; bottom: 0;
-        background: rgba(0,0,0,0.85);
+        background: rgba(0,0,0,0.9);
         z-index: 2147483647;
         display: flex;
         justify-content: center;
         align-items: center;
         color: white;
         font-family: -apple-system, system-ui, sans-serif;
+        backdrop-filter: blur(8px);
     `;
 
     let timeLeft = 300; // 5 minutes (300 seconds)
+    const rewordedText = data && data.reworded ? data.reworded : "No suggestion available.";
 
     coolingOverlay.innerHTML = `
-        <div style="background:#202124;padding:40px;border-radius:12px;text-align:center;max-width:500px;box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-            <h2 style="color:#f28b82;margin-top:0;font-size:24px;">Cooling Period Activated</h2>
-            <p style="font-size:16px;line-height:1.5;">High stress level (>85) detected. Take a deep breath. You cannot send this message for 5 minutes.</p>
-            <div style="font-size:64px;font-weight:bold;margin:30px 0;font-variant-numeric: tabular-nums;" id="rewordit-timer">05:00</div>
-            <div style="display:flex;gap:15px;justify-content:center;">
-                <button id="rewordit-edit" style="background:#8ab4f8;color:#202124;border:none;padding:12px 24px;border-radius:6px;cursor:pointer;font-weight:bold;font-size:16px;">Edit Message</button>
-                <button id="rewordit-send-anyway" style="background:transparent;color:#9aa0a6;border:1px solid #5f6368;padding:12px 24px;border-radius:6px;cursor:pointer;font-weight:bold;font-size:16px;">Send Anyway</button>
+        <div style="background:#1e1e24;padding:40px;border-radius:16px;text-align:center;max-width:550px;width:90%;box-shadow: 0 20px 50px rgba(0,0,0,0.8); border: 1px solid rgba(255,59,59,0.2);">
+            <div style="width:60px;height:60px;border-radius:50%;background:rgba(255,59,59,0.1);display:flex;align-items:center;justify-content:center;margin: 0 auto 20px;">
+                <span style="font-size:30px;">😤</span>
+            </div>
+            <h2 style="color:#ff5f56;margin-top:0;font-size:26px;font-weight:700;letter-spacing:-0.5px;">Cooling Period Activated</h2>
+            <p style="font-size:16px;line-height:1.6;color:#a0a0a5;margin-bottom:20px;">Your message triggered a high stress alert (Score: ${data ? data.stress_score : '>85'}). Science shows waiting 5 minutes prevents regret. Take a deep breath.</p>
+            
+            <div style="font-size:60px;font-weight:800;margin:20px 0;font-variant-numeric: tabular-nums;color:#fff;letter-spacing:2px;text-shadow: 0 0 20px rgba(255,255,255,0.2);" id="rewordit-timer">05:00</div>
+            
+            <div style="background:rgba(74, 222, 128, 0.05);border:1px solid rgba(74, 222, 128, 0.2);padding:20px;border-radius:12px;margin-bottom:30px;text-align:left;">
+                <div style="font-size:12px;text-transform:uppercase;letter-spacing:1px;color:#4ade80;font-weight:700;margin-bottom:8px;">✨ Calmer Alternative</div>
+                <div style="font-size:15px;line-height:1.5;color:#f9f9f9;font-style:italic;">"${rewordedText}"</div>
+            </div>
+
+            <div style="display:flex;gap:15px;justify-content:center;flex-wrap:wrap;">
+                <button id="rewordit-use-suggestion" style="background:#4ade80;color:#000;border:none;padding:14px 24px;border-radius:8px;cursor:pointer;font-weight:700;font-size:15px;transition:transform 0.2s;">Accept Alternative</button>
+                <button id="rewordit-edit" style="background:rgba(255,255,255,0.1);color:#fff;border:none;padding:14px 24px;border-radius:8px;cursor:pointer;font-weight:600;font-size:15px;transition:background 0.2s;">Edit Mine Manually</button>
+                <button id="rewordit-send-anyway" style="background:transparent;color:#666;border:1px solid #444;padding:14px 24px;border-radius:8px;cursor:not-allowed;font-weight:600;font-size:15px;opacity:0.5;transition:all 0.3s;" disabled>Wait 5s to Send</button>
             </div>
         </div>
     `;
@@ -358,6 +371,8 @@ function showCoolingOverlay() {
     document.body.appendChild(coolingOverlay);
 
     const timerEl = document.getElementById('rewordit-timer');
+    const sendAnywayBtn = document.getElementById('rewordit-send-anyway');
+    let penaltyTimer = 5;
 
     coolingTimerInterval = setInterval(() => {
         timeLeft--;
@@ -369,17 +384,46 @@ function showCoolingOverlay() {
             const s = (timeLeft % 60).toString().padStart(2, '0');
             timerEl.innerText = `${m}:${s}`;
         }
+
+        if (penaltyTimer > 0) {
+            penaltyTimer--;
+            sendAnywayBtn.innerText = `Wait ${penaltyTimer}s to Send`;
+            if (penaltyTimer === 0) {
+                sendAnywayBtn.innerText = "Send Anyway";
+                sendAnywayBtn.style.opacity = "1";
+                sendAnywayBtn.style.cursor = "pointer";
+                sendAnywayBtn.style.color = "#ff5f56";
+                sendAnywayBtn.style.borderColor = "rgba(255,95,86,0.3)";
+                sendAnywayBtn.disabled = false;
+            }
+        }
     }, 1000);
 
-    document.getElementById('rewordit-edit').addEventListener('click', () => {
+    // Hover effects
+    document.getElementById('rewordit-use-suggestion').onmouseover = function () { this.style.transform = 'scale(1.03)'; }
+    document.getElementById('rewordit-use-suggestion').onmouseout = function () { this.style.transform = 'scale(1)'; }
+    document.getElementById('rewordit-edit').onmouseover = function () { this.style.background = 'rgba(255,255,255,0.15)'; }
+    document.getElementById('rewordit-edit').onmouseout = function () { this.style.background = 'rgba(255,255,255,0.1)'; }
+
+    // Handlers
+    document.getElementById('rewordit-use-suggestion').addEventListener('click', () => {
+        if (currentTarget && data && data.reworded) {
+            setTextToElement(currentTarget, data.reworded);
+            lastAnalyzedText = data.reworded;
+        }
         removeCoolingOverlay();
+    });
+
+    document.getElementById('rewordit-edit').addEventListener('click', () => {
         lastAnalyzedText = currentText; // Mark it so we don't instantly loop on focus
+        removeCoolingOverlay();
         if (currentTarget) currentTarget.focus();
     });
 
-    document.getElementById('rewordit-send-anyway').addEventListener('click', () => {
-        removeCoolingOverlay();
+    document.getElementById('rewordit-send-anyway').addEventListener('click', function () {
+        if (this.disabled) return;
         lastAnalyzedText = currentText;
+        removeCoolingOverlay();
     });
 }
 
@@ -404,9 +448,13 @@ document.addEventListener('keydown', (e) => {
 
 document.addEventListener('click', (e) => {
     if (isCoolingDown) {
-        // Intercept buttons that look like send buttons (Gmail, LinkedIn, Twitter etc.)
         const btn = e.target.closest('button, div[role="button"], input[type="submit"]');
         if (!btn) return;
+
+        // CRITICAL FIX: DO NOT BLAME OVERLAY BUTTONS! Let them click the overlay elements!
+        if (btn.id === 'rewordit-use-suggestion' || btn.id === 'rewordit-edit' || btn.id === 'rewordit-send-anyway') {
+            return;
+        }
 
         const text = (btn.innerText || btn.getAttribute('aria-label') || btn.getAttribute('data-tooltip') || "").toLowerCase();
         const isSendBtn = text.includes('send') ||
