@@ -1602,8 +1602,36 @@
 
     <footer>
         <div class="f-logo">Reword<i>It</i></div>
-        <div>
-            <a href="dashboard.html" style="font-weight: 500; transition: color 0.3s;">Analytics Dashboard →</a>
+        <div style="margin-top: 10px; margin-bottom: 30px;">
+            <a href="dashboard.html" class="dashboard-footer-btn" style="
+                display: inline-flex;
+                align-items: center;
+                gap: 12px;
+                background: linear-gradient(135deg, rgba(248, 171, 16, 0.15), rgba(255, 59, 59, 0.15));
+                border: 1px solid rgba(248, 171, 16, 0.4);
+                padding: 14px 28px;
+                border-radius: 50px;
+                color: var(--primary);
+                font-family: 'Outfit', sans-serif;
+                font-weight: 700;
+                font-size: 16px;
+                letter-spacing: 0.5px;
+                text-decoration: none;
+                transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                box-shadow: 0 0 20px rgba(248, 171, 16, 0.2), inset 0 0 10px rgba(255, 255, 255, 0.05);
+                position: relative;
+                overflow: hidden;
+            " onmouseover="this.style.transform='translateY(-3px) scale(1.02)'; this.style.boxShadow='0 10px 30px rgba(248, 171, 16, 0.4), inset 0 0 15px rgba(255, 255, 255, 0.1)';"
+                onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 0 20px rgba(248, 171, 16, 0.2), inset 0 0 10px rgba(255, 255, 255, 0.05)';">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="3" y1="9" x2="21" y2="9"></line>
+                    <line x1="9" y1="21" x2="9" y2="9"></line>
+                </svg>
+                Open Analytics Dashboard
+                <span style="font-size: 18px; margin-left: 8px;">&rarr;</span>
+            </a>
         </div>
     </footer>
 
