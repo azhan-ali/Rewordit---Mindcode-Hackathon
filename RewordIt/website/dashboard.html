@@ -611,391 +611,392 @@
                     <canvas id="radarChart"></canvas>
                 </div>
             </div>
+        </div>
 
-            <!-- Section 4: Calm Streak Heatmap -->
-            <div class="chart-section" style="margin-top: 40px;">
-                <div class="chart-header"
-                    style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 15px;">
-                    <div>
-                        <h2>Calm Streak Calendar</h2>
-                        <p style="color: var(--text-muted);">Mental freshness over the last 30 days.</p>
-                    </div>
-                    <div
-                        style="display: flex; gap: 12px; font-size: 12px; color: var(--text-muted); align-items: center; font-weight: 500;">
-                        <span style="display:flex; align-items:center; gap:4px;">
-                            <div
-                                style="width:12px;height:12px;border-radius:3px;background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1);">
-                            </div> No Data
-                        </span>
-                        <span style="display:flex; align-items:center; gap:4px;">
-                            <div style="width:12px;height:12px;border-radius:3px;background:#4ade80;"></div> Calm
-                        </span>
-                        <span style="display:flex; align-items:center; gap:4px;">
-                            <div style="width:12px;height:12px;border-radius:3px;background:#f8ab10;"></div> Moderate
-                        </span>
-                        <span style="display:flex; align-items:center; gap:4px;">
-                            <div style="width:12px;height:12px;border-radius:3px;background:#ff3b3b;"></div> High Stress
-                        </span>
-                    </div>
+        <!-- Section 4: Calm Streak Heatmap -->
+        <div class="chart-section" style="margin-top: 40px;">
+            <div class="chart-header"
+                style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 15px;">
+                <div>
+                    <h2>Calm Streak Calendar</h2>
+                    <p style="color: var(--text-muted);">Mental freshness over the last 30 days.</p>
                 </div>
-                <!-- Labels for months could go here, but days inside blocks is better for flex-wrap -->
-                <div id="heatmap-container" style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 20px;">
-                    <!-- Populated by JS -->
+                <div
+                    style="display: flex; gap: 12px; font-size: 12px; color: var(--text-muted); align-items: center; font-weight: 500;">
+                    <span style="display:flex; align-items:center; gap:4px;">
+                        <div
+                            style="width:12px;height:12px;border-radius:3px;background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1);">
+                        </div> No Data
+                    </span>
+                    <span style="display:flex; align-items:center; gap:4px;">
+                        <div style="width:12px;height:12px;border-radius:3px;background:#4ade80;"></div> Calm
+                    </span>
+                    <span style="display:flex; align-items:center; gap:4px;">
+                        <div style="width:12px;height:12px;border-radius:3px;background:#f8ab10;"></div> Moderate
+                    </span>
+                    <span style="display:flex; align-items:center; gap:4px;">
+                        <div style="width:12px;height:12px;border-radius:3px;background:#ff3b3b;"></div> High Stress
+                    </span>
                 </div>
             </div>
-
-            <!-- Section E: Platform Breakdown -->
-            <div class="chart-section" id="platform-breakdown">
-                <div class="chart-header">
-                    <h2>Platform Breakdown</h2>
-                    <p style="color: var(--text-muted);">Where you write the most stressed messages.</p>
-                </div>
-                <div id="platform-list" style="display: flex; flex-direction: column; gap: 15px;">
-                    <!-- Populated by JS -->
-                </div>
+            <!-- Labels for months could go here, but days inside blocks is better for flex-wrap -->
+            <div id="heatmap-container" style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 20px;">
+                <!-- Populated by JS -->
             </div>
+        </div>
 
-        </div> <!-- End Dashboard Content -->
+        <!-- Section E: Platform Breakdown -->
+        <div class="chart-section" id="platform-breakdown">
+            <div class="chart-header">
+                <h2>Platform Breakdown</h2>
+                <p style="color: var(--text-muted);">Where you write the most stressed messages.</p>
+            </div>
+            <div id="platform-list" style="display: flex; flex-direction: column; gap: 15px;">
+                <!-- Populated by JS -->
+            </div>
+        </div>
 
-        <footer>
-            <p>🔒 All data is stored locally. Nothing leaves your device.</p>
-        </footer>
+    </div> <!-- End Dashboard Content -->
 
-        <script>
-            const EXTENSION_ID = 'YOUR_EXTENSION_ID_HERE'; // Replaced automatically if run from within extension context or if user inputs it
+    <footer>
+        <p>🔒 All data is stored locally. Nothing leaves your device.</p>
+    </footer>
 
-            // Realistic Fallback Data (Last 7 days)
-            const generateDemoData = () => {
-                const data = [];
-                const platforms = ['slack', 'gmail', 'twitter', 'whatsapp'];
-                let now = new Date();
+    <script>
+        const EXTENSION_ID = 'YOUR_EXTENSION_ID_HERE'; // Replaced automatically if run from within extension context or if user inputs it
 
-                for (let i = 0; i < 150; i++) {
-                    const daysAgo = Math.floor(Math.random() * 30);
-                    const isHighStress = Math.random() > 0.8;
-                    const score = isHighStress ? Math.floor(Math.random() * 20 + 80) : Math.floor(Math.random() * 40 + 10);
+        // Realistic Fallback Data (Last 7 days)
+        const generateDemoData = () => {
+            const data = [];
+            const platforms = ['slack', 'gmail', 'twitter', 'whatsapp'];
+            let now = new Date();
 
-                    let ems = [];
-                    if (isHighStress) {
-                        ems = [['Aggressive', 'Frustrated'], ['Anxious', 'Passive-Aggressive']][Math.floor(Math.random() * 2)];
-                    } else {
-                        ems = [['Professional', 'Chill'], ['Assertive', 'Chill']][Math.floor(Math.random() * 2)];
-                    }
+            for (let i = 0; i < 150; i++) {
+                const daysAgo = Math.floor(Math.random() * 30);
+                const isHighStress = Math.random() > 0.8;
+                const score = isHighStress ? Math.floor(Math.random() * 20 + 80) : Math.floor(Math.random() * 40 + 10);
 
-                    data.push({
-                        timestamp: now.getTime() - (daysAgo * 24 * 60 * 60 * 1000) - (Math.random() * 10000000),
-                        stress_score: score,
-                        emotions: ems,
-                        platform: platforms[Math.floor(Math.random() * platforms.length)],
-                        rewrite_accepted: score > 50 ? Math.random() > 0.3 : false,
-                        cooling_triggered: score > 85
-                    });
-                }
-                return data;
-            };
-
-            const processData = (history) => {
-                const now = new Date();
-
-                // Section 1: Stats
-                let total = history.length;
-                let highCount = history.filter(h => h.stress_score > 85).length;
-                let rewrites = history.filter(h => h.rewrite_accepted).length;
-                let coolings = history.filter(h => h.cooling_triggered).length;
-                const animateValue = (id, start, end, duration) => {
-                    const obj = document.getElementById(id);
-                    let startTimestamp = null;
-                    const step = (timestamp) => {
-                        if (!startTimestamp) startTimestamp = timestamp;
-                        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-                        obj.innerText = Math.floor(progress * (end - start) + start);
-                        if (progress < 1) {
-                            window.requestAnimationFrame(step);
-                        } else {
-                            obj.innerText = end;
-                        }
-                    };
-                    window.requestAnimationFrame(step);
-                }
-
-                animateValue('stat-total', 0, total, 1500);
-                animateValue('stat-high', 0, highCount, 1500);
-                animateValue('stat-rewrites', 0, rewrites, 1500);
-                animateValue('stat-cooling', 0, coolings, 1500);
-
-                // Section 2: Chart Data Prep
-                const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-                const last7DaysData = {};
-                const last7DaysLabels = [];
-
-                for (let i = 6; i >= 0; i--) {
-                    const d = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
-                    const dayName = days[d.getDay()];
-                    last7DaysLabels.push(dayName);
-                    last7DaysData[dayName] = { sum: 0, count: 0 };
-                }
-
-                history.forEach(item => {
-                    const d = new Date(item.timestamp);
-                    const diffTime = Math.abs(now - d);
-                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                    if (diffDays <= 7) {
-                        const dayName = days[d.getDay()];
-                        if (last7DaysData[dayName]) {
-                            last7DaysData[dayName].sum += item.stress_score;
-                            last7DaysData[dayName].count++;
-                        }
-                    }
-                });
-
-                const chartScores = last7DaysLabels.map(day => {
-                    const d = last7DaysData[day];
-                    return d.count === 0 ? 0 : Math.round(d.sum / d.count);
-                });
-
-                const barColors = chartScores.map(score => {
-                    if (score === 0) return 'rgba(255,255,255,0.1)';
-                    if (score < 50) return '#4ade80'; // Green
-                    if (score <= 75) return '#f8ab10'; // Orange
-                    return '#ff3b3b'; // Red
-                });
-
-                // Make Chart
-                const ctx = document.getElementById('moodChart').getContext('2d');
-                new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: last7DaysLabels,
-                        datasets: [{
-                            label: 'Avg Stress Score',
-                            data: chartScores,
-                            backgroundColor: barColors,
-                            borderRadius: 12,
-                            borderSkipped: false,
-                            barThickness: 'flex',
-                            maxBarThickness: 40
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        animation: {
-                            y: {
-                                duration: 2000,
-                                easing: 'easeOutElastic'
-                            }
-                        },
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: {
-                                backgroundColor: 'rgba(0,0,0,0.8)',
-                                titleFont: { size: 14, family: 'Outfit' },
-                                bodyFont: { size: 16, weight: 'bold', family: 'Outfit' },
-                                padding: 12,
-                                cornerRadius: 8,
-                                displayColors: false,
-                            }
-                        },
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                max: 100,
-                                grid: { color: 'rgba(255,255,255,0.05)', borderDash: [5, 5] },
-                                ticks: { color: '#a0a0a5', font: { family: 'Outfit' } }
-                            },
-                            x: {
-                                grid: { display: false },
-                                ticks: { color: '#a0a0a5', font: { family: 'Outfit', weight: 'bold' } }
-                            }
-                        }
-                    }
-                });
-
-                // Auto Insight
-                if (total > 0) {
-                    let maxIdx = chartScores.indexOf(Math.max(...chartScores));
-                    if (chartScores[maxIdx] > 0) {
-                        document.getElementById('auto-insight').innerText = `💡 Insight: You're most stressed on ${last7DaysLabels[maxIdx]}s. Taking short breaks on this day might help!`;
-                    } else {
-                        document.getElementById('auto-insight').innerText = `💡 Insight: Not enough data for this week yet. Keep typing!`;
-                    }
+                let ems = [];
+                if (isHighStress) {
+                    ems = [['Aggressive', 'Frustrated'], ['Anxious', 'Passive-Aggressive']][Math.floor(Math.random() * 2)];
                 } else {
-                    document.getElementById('auto-insight').innerText = `💡 Insight: Data collection started. Type in apps to see your mood!`;
+                    ems = [['Professional', 'Chill'], ['Assertive', 'Chill']][Math.floor(Math.random() * 2)];
                 }
 
-                // Section 3: Weekly Report (Show if Sunday)
-                if (now.getDay() === 0 || true) { // Force true for testing purposes
-                    document.getElementById('weekly-report').style.display = 'block';
+                data.push({
+                    timestamp: now.getTime() - (daysAgo * 24 * 60 * 60 * 1000) - (Math.random() * 10000000),
+                    stress_score: score,
+                    emotions: ems,
+                    platform: platforms[Math.floor(Math.random() * platforms.length)],
+                    rewrite_accepted: score > 50 ? Math.random() > 0.3 : false,
+                    cooling_triggered: score > 85
+                });
+            }
+            return data;
+        };
 
-                    // Calculations
-                    let maxScoreDay = ""; let maxVal = -1;
-                    let minScoreDay = ""; let minVal = 101;
+        const processData = (history) => {
+            const now = new Date();
 
-                    chartScores.forEach((s, idx) => {
-                        if (s > 0) {
-                            if (s > maxVal) { maxVal = s; maxScoreDay = last7DaysLabels[idx]; }
-                            if (s < minVal) { minVal = s; minScoreDay = last7DaysLabels[idx]; }
-                        }
-                    });
-
-                    document.getElementById('wr-stressed-day').innerText = maxVal > -1 ? maxScoreDay : '--';
-                    document.getElementById('wr-calm-day').innerText = minVal < 101 ? minScoreDay : '--';
-
-                    const totalOver50 = history.filter(h => h.stress_score > 50).length;
-                    const rewriteRate = totalOver50 > 0 ? Math.round((rewrites / totalOver50) * 100) : 0;
-                    document.getElementById('wr-rewrite-rate').innerText = `${rewriteRate}%`;
-                    document.getElementById('wr-cooling').innerText = `${coolings} times`;
-
-                    // Platform
-                    const plats = {};
-                    history.forEach(h => plats[h.platform] = (plats[h.platform] || 0) + 1);
-                    const mainPlat = Object.keys(plats).sort((a, b) => plats[b] - plats[a])[0];
-                    document.getElementById('wr-platform').innerText = mainPlat || '--';
-
-                    // Avg 
-                    const weekAvg = chartScores.filter(s => s > 0).length > 0
-                        ? Math.round(chartScores.reduce((a, b) => a + b, 0) / chartScores.filter(s => s > 0).length)
-                        : 0;
-                    document.getElementById('wr-avg-score').innerText = `${weekAvg}/100`;
-
-                    // Tip
-                    const tipEl = document.querySelector('#wr-tip span');
-                    if (coolings > 3) tipEl.innerText = "You experienced multiple critical stress events. Consider reviewing your workload or taking longer breaks.";
-                    else if (rewriteRate > 50) tipEl.innerText = `Great job accepting rewrites! You are actively choosing calmer communication (${rewriteRate}% of the time).`;
-                    else if (maxVal > -1 && maxScoreDay) tipEl.innerText = `You're consistently stressed on ${maxScoreDay}s. Try avoiding important emails in the afternoon on this day.`;
-                    else if (weekAvg > 70) tipEl.innerText = "Overall stress was high this week. Disconnecting over the weekend is highly recommended.";
-                    else tipEl.innerText = "Keep going — every rewrite is a better conversation.";
-                }
-
-                // --- Section: Tone Radar Chart Prep ---
-                const toneCounts = { Aggressive: 0, Anxious: 0, 'Passive-Aggressive': 0, Assertive: 0, Professional: 0, Chill: 0, Frustrated: 0 };
-                history.forEach(item => {
-                    if (item.emotions && item.emotions.length > 0) {
-                        item.emotions.forEach(e => {
-                            if (toneCounts[e] !== undefined) toneCounts[e]++;
-                        });
+            // Section 1: Stats
+            let total = history.length;
+            let highCount = history.filter(h => h.stress_score > 85).length;
+            let rewrites = history.filter(h => h.rewrite_accepted).length;
+            let coolings = history.filter(h => h.cooling_triggered).length;
+            const animateValue = (id, start, end, duration) => {
+                const obj = document.getElementById(id);
+                let startTimestamp = null;
+                const step = (timestamp) => {
+                    if (!startTimestamp) startTimestamp = timestamp;
+                    const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                    obj.innerText = Math.floor(progress * (end - start) + start);
+                    if (progress < 1) {
+                        window.requestAnimationFrame(step);
                     } else {
-                        if (item.stress_score > 80) toneCounts.Aggressive++;
-                        else if (item.stress_score > 60) toneCounts.Anxious++;
-                        else toneCounts.Professional++;
+                        obj.innerText = end;
                     }
-                });
-                const radarCtx = document.getElementById('radarChart').getContext('2d');
-                new Chart(radarCtx, {
-                    type: 'radar',
-                    data: {
-                        labels: Object.keys(toneCounts),
-                        datasets: [{
-                            label: 'Tone Frequency',
-                            data: Object.values(toneCounts),
-                            backgroundColor: 'rgba(248, 171, 16, 0.2)',
-                            borderColor: '#f8ab10',
-                            pointBackgroundColor: '#ff3b3b',
-                            pointBorderColor: '#fff',
-                            pointHoverBackgroundColor: '#fff',
-                            pointHoverBorderColor: '#ff3b3b',
-                            borderWidth: 2
-                        }]
+                };
+                window.requestAnimationFrame(step);
+            }
+
+            animateValue('stat-total', 0, total, 1500);
+            animateValue('stat-high', 0, highCount, 1500);
+            animateValue('stat-rewrites', 0, rewrites, 1500);
+            animateValue('stat-cooling', 0, coolings, 1500);
+
+            // Section 2: Chart Data Prep
+            const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            const last7DaysData = {};
+            const last7DaysLabels = [];
+
+            for (let i = 6; i >= 0; i--) {
+                const d = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
+                const dayName = days[d.getDay()];
+                last7DaysLabels.push(dayName);
+                last7DaysData[dayName] = { sum: 0, count: 0 };
+            }
+
+            history.forEach(item => {
+                const d = new Date(item.timestamp);
+                const diffTime = Math.abs(now - d);
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                if (diffDays <= 7) {
+                    const dayName = days[d.getDay()];
+                    if (last7DaysData[dayName]) {
+                        last7DaysData[dayName].sum += item.stress_score;
+                        last7DaysData[dayName].count++;
+                    }
+                }
+            });
+
+            const chartScores = last7DaysLabels.map(day => {
+                const d = last7DaysData[day];
+                return d.count === 0 ? 0 : Math.round(d.sum / d.count);
+            });
+
+            const barColors = chartScores.map(score => {
+                if (score === 0) return 'rgba(255,255,255,0.1)';
+                if (score < 50) return '#4ade80'; // Green
+                if (score <= 75) return '#f8ab10'; // Orange
+                return '#ff3b3b'; // Red
+            });
+
+            // Make Chart
+            const ctx = document.getElementById('moodChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: last7DaysLabels,
+                    datasets: [{
+                        label: 'Avg Stress Score',
+                        data: chartScores,
+                        backgroundColor: barColors,
+                        borderRadius: 12,
+                        borderSkipped: false,
+                        barThickness: 'flex',
+                        maxBarThickness: 40
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    animation: {
+                        y: {
+                            duration: 2000,
+                            easing: 'easeOutElastic'
+                        }
                     },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            r: {
-                                angleLines: { color: 'rgba(255,255,255,0.1)' },
-                                grid: { color: 'rgba(255,255,255,0.1)' },
-                                pointLabels: { color: '#a0a0a5', font: { family: 'Outfit', size: 12, weight: 'bold' } },
-                                ticks: { display: false, backdropColor: 'transparent' }
-                            }
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(0,0,0,0.8)',
+                            titleFont: { size: 14, family: 'Outfit' },
+                            bodyFont: { size: 16, weight: 'bold', family: 'Outfit' },
+                            padding: 12,
+                            cornerRadius: 8,
+                            displayColors: false,
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            grid: { color: 'rgba(255,255,255,0.05)', borderDash: [5, 5] },
+                            ticks: { color: '#a0a0a5', font: { family: 'Outfit' } }
                         },
-                        plugins: { legend: { display: false } }
-                    }
-                });
-
-                // --- Section: Heatmap Prep ---
-                const heatmapContainer = document.getElementById('heatmap-container');
-                heatmapContainer.innerHTML = '';
-                for (let i = 29; i >= 0; i--) {
-                    const d = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
-                    const dayItems = history.filter(item => {
-                        const idate = new Date(item.timestamp);
-                        return idate.getDate() === d.getDate() && idate.getMonth() === d.getMonth();
-                    });
-
-                    let tooltip = d.toLocaleDateString() + ' : No activity';
-                    let boxColor = 'rgba(255, 255, 255, 0.05)';
-                    let glow = 'none';
-
-                    if (dayItems.length > 0) {
-                        const maxStress = Math.max(...dayItems.map(x => x.stress_score));
-                        const hadCooling = dayItems.some(x => x.cooling_triggered);
-
-                        if (hadCooling || maxStress > 85) {
-                            boxColor = '#ff3b3b';
-                            glow = '0 0 10px rgba(255, 59, 59, 0.5)';
-                            tooltip = d.toLocaleDateString() + ` : Red Alert (${dayItems.length} msgs, Peak: ${maxStress})`;
-                        } else if (maxStress > 60) {
-                            boxColor = '#f8ab10';
-                            glow = '0 0 10px rgba(248, 171, 16, 0.5)';
-                            tooltip = d.toLocaleDateString() + ` : Moderate Stress (${dayItems.length} msgs, Peak: ${maxStress})`;
-                        } else {
-                            boxColor = '#4ade80';
-                            glow = '0 0 10px rgba(74, 222, 128, 0.5)';
-                            tooltip = d.toLocaleDateString() + ` : Calm & Professional (${dayItems.length} msgs)`;
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: '#a0a0a5', font: { family: 'Outfit', weight: 'bold' } }
                         }
                     }
-
-                    const box = document.createElement('div');
-                    box.style.width = '30px';
-                    box.style.height = '30px';
-                    box.style.borderRadius = '6px';
-                    box.style.backgroundColor = boxColor;
-                    box.style.boxShadow = glow;
-                    box.title = tooltip;
-                    box.style.transition = 'all 0.3s ease';
-
-                    // Add Day number inside the box for context
-                    box.style.display = 'flex';
-                    box.style.alignItems = 'center';
-                    box.style.justifyContent = 'center';
-                    box.style.fontSize = '12px';
-                    box.style.fontFamily = 'Outfit, sans-serif';
-                    box.style.color = (boxColor === 'rgba(255, 255, 255, 0.05)') ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.6)';
-                    box.style.fontWeight = '800';
-                    box.innerText = d.getDate();
-
-                    // Dim down the empty boxes slightly more so colored ones pop
-                    if (boxColor === 'rgba(255, 255, 255, 0.05)') {
-                        box.style.border = '1px solid rgba(255,255,255,0.05)';
-                    }
-
-                    box.onmouseenter = () => {
-                        box.style.transform = 'scale(1.3) translateY(-2px)';
-                        document.body.classList.add('cursor-hover');
-                    };
-                    box.onmouseleave = () => {
-                        box.style.transform = 'scale(1) translateY(0)';
-                        document.body.classList.remove('cursor-hover');
-                    };
-
-                    heatmapContainer.appendChild(box);
                 }
+            });
 
-                // Platform Breakdown List
-                const platList = document.getElementById('platform-list');
-                platList.innerHTML = '';
-                const platScores = {};
-                history.forEach(h => {
-                    if (!platScores[h.platform]) platScores[h.platform] = { sum: 0, count: 0 };
-                    platScores[h.platform].sum += h.stress_score;
-                    platScores[h.platform].count++;
+            // Auto Insight
+            if (total > 0) {
+                let maxIdx = chartScores.indexOf(Math.max(...chartScores));
+                if (chartScores[maxIdx] > 0) {
+                    document.getElementById('auto-insight').innerText = `💡 Insight: You're most stressed on ${last7DaysLabels[maxIdx]}s. Taking short breaks on this day might help!`;
+                } else {
+                    document.getElementById('auto-insight').innerText = `💡 Insight: Not enough data for this week yet. Keep typing!`;
+                }
+            } else {
+                document.getElementById('auto-insight').innerText = `💡 Insight: Data collection started. Type in apps to see your mood!`;
+            }
+
+            // Section 3: Weekly Report (Show if Sunday)
+            if (now.getDay() === 0 || true) { // Force true for testing purposes
+                document.getElementById('weekly-report').style.display = 'block';
+
+                // Calculations
+                let maxScoreDay = ""; let maxVal = -1;
+                let minScoreDay = ""; let minVal = 101;
+
+                chartScores.forEach((s, idx) => {
+                    if (s > 0) {
+                        if (s > maxVal) { maxVal = s; maxScoreDay = last7DaysLabels[idx]; }
+                        if (s < minVal) { minVal = s; minScoreDay = last7DaysLabels[idx]; }
+                    }
                 });
 
-                const sortedPlats = Object.keys(platScores).sort((a, b) => (platScores[b].sum / platScores[b].count) - (platScores[a].sum / platScores[a].count));
+                document.getElementById('wr-stressed-day').innerText = maxVal > -1 ? maxScoreDay : '--';
+                document.getElementById('wr-calm-day').innerText = minVal < 101 ? minScoreDay : '--';
 
-                sortedPlats.forEach(p => {
-                    const avg = Math.round(platScores[p].sum / platScores[p].count);
-                    let indicator = avg > 70 ? '#ff3b3b' : (avg > 40 ? '#f8ab10' : '#4ade80');
-                    platList.innerHTML += `
+                const totalOver50 = history.filter(h => h.stress_score > 50).length;
+                const rewriteRate = totalOver50 > 0 ? Math.round((rewrites / totalOver50) * 100) : 0;
+                document.getElementById('wr-rewrite-rate').innerText = `${rewriteRate}%`;
+                document.getElementById('wr-cooling').innerText = `${coolings} times`;
+
+                // Platform
+                const plats = {};
+                history.forEach(h => plats[h.platform] = (plats[h.platform] || 0) + 1);
+                const mainPlat = Object.keys(plats).sort((a, b) => plats[b] - plats[a])[0];
+                document.getElementById('wr-platform').innerText = mainPlat || '--';
+
+                // Avg 
+                const weekAvg = chartScores.filter(s => s > 0).length > 0
+                    ? Math.round(chartScores.reduce((a, b) => a + b, 0) / chartScores.filter(s => s > 0).length)
+                    : 0;
+                document.getElementById('wr-avg-score').innerText = `${weekAvg}/100`;
+
+                // Tip
+                const tipEl = document.querySelector('#wr-tip span');
+                if (coolings > 3) tipEl.innerText = "You experienced multiple critical stress events. Consider reviewing your workload or taking longer breaks.";
+                else if (rewriteRate > 50) tipEl.innerText = `Great job accepting rewrites! You are actively choosing calmer communication (${rewriteRate}% of the time).`;
+                else if (maxVal > -1 && maxScoreDay) tipEl.innerText = `You're consistently stressed on ${maxScoreDay}s. Try avoiding important emails in the afternoon on this day.`;
+                else if (weekAvg > 70) tipEl.innerText = "Overall stress was high this week. Disconnecting over the weekend is highly recommended.";
+                else tipEl.innerText = "Keep going — every rewrite is a better conversation.";
+            }
+
+            // --- Section: Tone Radar Chart Prep ---
+            const toneCounts = { Aggressive: 0, Anxious: 0, 'Passive-Aggressive': 0, Assertive: 0, Professional: 0, Chill: 0, Frustrated: 0 };
+            history.forEach(item => {
+                if (item.emotions && item.emotions.length > 0) {
+                    item.emotions.forEach(e => {
+                        if (toneCounts[e] !== undefined) toneCounts[e]++;
+                    });
+                } else {
+                    if (item.stress_score > 80) toneCounts.Aggressive++;
+                    else if (item.stress_score > 60) toneCounts.Anxious++;
+                    else toneCounts.Professional++;
+                }
+            });
+            const radarCtx = document.getElementById('radarChart').getContext('2d');
+            new Chart(radarCtx, {
+                type: 'radar',
+                data: {
+                    labels: Object.keys(toneCounts),
+                    datasets: [{
+                        label: 'Tone Frequency',
+                        data: Object.values(toneCounts),
+                        backgroundColor: 'rgba(248, 171, 16, 0.2)',
+                        borderColor: '#f8ab10',
+                        pointBackgroundColor: '#ff3b3b',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#ff3b3b',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { color: 'rgba(255,255,255,0.1)' },
+                            grid: { color: 'rgba(255,255,255,0.1)' },
+                            pointLabels: { color: '#a0a0a5', font: { family: 'Outfit', size: 12, weight: 'bold' } },
+                            ticks: { display: false, backdropColor: 'transparent' }
+                        }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+
+            // --- Section: Heatmap Prep ---
+            const heatmapContainer = document.getElementById('heatmap-container');
+            heatmapContainer.innerHTML = '';
+            for (let i = 29; i >= 0; i--) {
+                const d = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
+                const dayItems = history.filter(item => {
+                    const idate = new Date(item.timestamp);
+                    return idate.getDate() === d.getDate() && idate.getMonth() === d.getMonth();
+                });
+
+                let tooltip = d.toLocaleDateString() + ' : No activity';
+                let boxColor = 'rgba(255, 255, 255, 0.05)';
+                let glow = 'none';
+
+                if (dayItems.length > 0) {
+                    const maxStress = Math.max(...dayItems.map(x => x.stress_score));
+                    const hadCooling = dayItems.some(x => x.cooling_triggered);
+
+                    if (hadCooling || maxStress > 85) {
+                        boxColor = '#ff3b3b';
+                        glow = '0 0 10px rgba(255, 59, 59, 0.5)';
+                        tooltip = d.toLocaleDateString() + ` : Red Alert (${dayItems.length} msgs, Peak: ${maxStress})`;
+                    } else if (maxStress > 60) {
+                        boxColor = '#f8ab10';
+                        glow = '0 0 10px rgba(248, 171, 16, 0.5)';
+                        tooltip = d.toLocaleDateString() + ` : Moderate Stress (${dayItems.length} msgs, Peak: ${maxStress})`;
+                    } else {
+                        boxColor = '#4ade80';
+                        glow = '0 0 10px rgba(74, 222, 128, 0.5)';
+                        tooltip = d.toLocaleDateString() + ` : Calm & Professional (${dayItems.length} msgs)`;
+                    }
+                }
+
+                const box = document.createElement('div');
+                box.style.width = '30px';
+                box.style.height = '30px';
+                box.style.borderRadius = '6px';
+                box.style.backgroundColor = boxColor;
+                box.style.boxShadow = glow;
+                box.title = tooltip;
+                box.style.transition = 'all 0.3s ease';
+
+                // Add Day number inside the box for context
+                box.style.display = 'flex';
+                box.style.alignItems = 'center';
+                box.style.justifyContent = 'center';
+                box.style.fontSize = '12px';
+                box.style.fontFamily = 'Outfit, sans-serif';
+                box.style.color = (boxColor === 'rgba(255, 255, 255, 0.05)') ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.6)';
+                box.style.fontWeight = '800';
+                box.innerText = d.getDate();
+
+                // Dim down the empty boxes slightly more so colored ones pop
+                if (boxColor === 'rgba(255, 255, 255, 0.05)') {
+                    box.style.border = '1px solid rgba(255,255,255,0.05)';
+                }
+
+                box.onmouseenter = () => {
+                    box.style.transform = 'scale(1.3) translateY(-2px)';
+                    document.body.classList.add('cursor-hover');
+                };
+                box.onmouseleave = () => {
+                    box.style.transform = 'scale(1) translateY(0)';
+                    document.body.classList.remove('cursor-hover');
+                };
+
+                heatmapContainer.appendChild(box);
+            }
+
+            // Platform Breakdown List
+            const platList = document.getElementById('platform-list');
+            platList.innerHTML = '';
+            const platScores = {};
+            history.forEach(h => {
+                if (!platScores[h.platform]) platScores[h.platform] = { sum: 0, count: 0 };
+                platScores[h.platform].sum += h.stress_score;
+                platScores[h.platform].count++;
+            });
+
+            const sortedPlats = Object.keys(platScores).sort((a, b) => (platScores[b].sum / platScores[b].count) - (platScores[a].sum / platScores[a].count));
+
+            sortedPlats.forEach(p => {
+                const avg = Math.round(platScores[p].sum / platScores[p].count);
+                let indicator = avg > 70 ? '#ff3b3b' : (avg > 40 ? '#f8ab10' : '#4ade80');
+                platList.innerHTML += `
                     <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); padding: 15px 20px; border-radius: 12px; display: flex; flex-direction: column; gap: 10px; transition: transform 0.2s; cursor: none;" onmouseover="this.style.background='rgba(255,255,255,0.06)'; document.body.classList.add('cursor-hover');" onmouseout="this.style.background='rgba(255,255,255,0.03)'; document.body.classList.remove('cursor-hover');">
                         <div style="display: flex; justify-content: space-between; align-items: center;">
                             <div style="font-weight: 600; font-size: 15px; display: flex; align-items: center; gap: 10px; text-transform: capitalize;">
@@ -1009,187 +1010,187 @@
                         </div>
                     </div>
                 `;
-                });
-                if (sortedPlats.length === 0) {
-                    platList.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 20px;">No platform data available yet. Start typing to see it here!</div>';
-                }
-            };
-
-            // Attempt Connection
-            const attemptLoadData = () => {
-                const savedId = localStorage.getItem('rewordit_extension_id');
-                const demoBanner = document.getElementById('demo-banner');
-                const connSetup = document.getElementById('connection-setup');
-                const dashContent = document.getElementById('dashboard-content');
-
-                function showConnectionSetup() {
-                    connSetup.style.display = 'block';
-                    dashContent.style.display = 'none';
-                    demoBanner.style.display = 'none';
-                }
-
-                function showDemoMode() {
-                    connSetup.style.display = 'none';
-                    dashContent.style.display = 'block';
-                    demoBanner.style.display = 'block';
-
-                    const badge = document.getElementById('conn-status');
-                    document.getElementById('conn-text').innerText = "Demo Data (Extension Not Linked)";
-                    badge.classList.add('demo');
-                    processData(generateDemoData());
-                }
-
-                if (savedId) {
-                    chrome.runtime.sendMessage(savedId, { type: 'getData' }, (response) => {
-                        if (chrome.runtime.lastError || !response || !response.success) {
-                            showDemoMode(); // Extension not found or communication failed
-                        } else {
-                            dashContent.style.display = 'block';
-                            connSetup.style.display = 'none';
-                            demoBanner.style.display = 'none';
-                            document.getElementById('conn-text').innerText = "Live Extension Data";
-                            document.getElementById('conn-status').classList.remove('demo');
-                            processData(response.messages || []);
-                        }
-                    });
-                } else {
-                    showConnectionSetup();
-                }
-
-                // Bind Setup Buttons
-                document.getElementById('connect-btn').addEventListener('click', () => {
-                    const idInput = document.getElementById('ext-id-input').value.trim();
-                    const err = document.getElementById('conn-error');
-                    if (!idInput) {
-                        err.innerText = "Please enter an Extension ID";
-                        err.style.display = 'block';
-                        return;
-                    }
-
-                    const btnText = document.getElementById('connect-btn-text');
-                    const btnSpinner = document.getElementById('connect-btn-spinner');
-
-                    btnText.style.display = 'none';
-                    btnSpinner.style.display = 'block';
-                    err.style.display = 'none';
-
-                    chrome.runtime.sendMessage(idInput, { type: 'getData' }, (response) => {
-                        btnText.style.display = 'inline';
-                        btnSpinner.style.display = 'none';
-                        if (chrome.runtime.lastError || !response || !response.success) {
-                            err.innerText = "Extension not found. Make sure it is installed and the ID is correct.";
-                            err.style.display = 'block';
-                        } else {
-                            localStorage.setItem('rewordit_extension_id', idInput);
-                            window.location.reload();
-                        }
-                    });
-                });
-
-                document.getElementById('demo-btn').addEventListener('click', () => {
-                    showDemoMode();
-                });
-            };
-
-            window.onload = attemptLoadData;
-
-            // Premium Elastic Cursor Logic
-            const cursorDot = document.getElementById('cursor-dot');
-            const cursorFollower = document.getElementById('cursor-follower');
-            let mouseX = window.innerWidth / 2;
-            let mouseY = window.innerHeight / 2;
-            let dotX = mouseX, dotY = mouseY;
-            let followerX = mouseX, followerY = mouseY;
-            let prevFollowerX = followerX, prevFollowerY = followerY;
-
-            window.addEventListener('mousemove', function (e) {
-                mouseX = e.clientX;
-                mouseY = e.clientY;
             });
-
-            function animateCursor() {
-                // Immediate snap dot
-                dotX += (mouseX - dotX) * 0.4;
-                dotY += (mouseY - dotY) * 0.4;
-                cursorDot.style.transform = `translate(${dotX}px, ${dotY}px) translate(-50%, -50%)`;
-
-                // Elastic follower
-                followerX += (mouseX - followerX) * 0.15;
-                followerY += (mouseY - followerY) * 0.15;
-
-                // Velocity and Stretching calculations (Squash & Stretch principle)
-                let velX = followerX - prevFollowerX;
-                let velY = followerY - prevFollowerY;
-                let distance = Math.sqrt(velX * velX + velY * velY);
-                let angle = Math.atan2(velY, velX) * 180 / Math.PI;
-
-                // Cap the stretch scale
-                let scaleX = Math.min(1 + distance * 0.012, 1.8);
-                let scaleY = Math.max(1 - distance * 0.005, 0.7);
-
-                // If hovering, disable stretch for a clean circular highlight
-                if (document.body.classList.contains('cursor-hover')) {
-                    scaleX = 1; scaleY = 1; angle = 0;
-                }
-
-                cursorFollower.style.transform =
-                    `translate(${followerX}px, ${followerY}px) translate(-50%, -50%) rotate(${angle}deg) scale(${scaleX}, ${scaleY})`;
-
-                prevFollowerX = followerX;
-                prevFollowerY = followerY;
-
-                requestAnimationFrame(animateCursor);
+            if (sortedPlats.length === 0) {
+                platList.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 20px;">No platform data available yet. Start typing to see it here!</div>';
             }
-            animateCursor();
+        };
 
-            const clickables = document.querySelectorAll('a, button, .stat-card, input, [role="button"], #weekly-report');
-            clickables.forEach((el) => {
-                el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
-                el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
-            });
-            // PDF Export Logic
-            document.getElementById('download-pdf-btn').addEventListener('click', function () {
-                const btn = this;
-                const originalText = btn.innerHTML;
-                btn.innerHTML = `<span class="spinner" style="display:inline-block; width: 14px; height: 14px; border: 2px solid #fff; border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite;"></span> Generating...`;
-                btn.style.pointerEvents = 'none';
+        // Attempt Connection
+        const attemptLoadData = () => {
+            const savedId = localStorage.getItem('rewordit_extension_id');
+            const demoBanner = document.getElementById('demo-banner');
+            const connSetup = document.getElementById('connection-setup');
+            const dashContent = document.getElementById('dashboard-content');
 
-                const element = document.getElementById('dashboard-content');
+            function showConnectionSetup() {
+                connSetup.style.display = 'block';
+                dashContent.style.display = 'none';
+                demoBanner.style.display = 'none';
+            }
 
-                // Hide the button itself in the PDF
-                btn.style.display = 'none';
+            function showDemoMode() {
+                connSetup.style.display = 'none';
+                dashContent.style.display = 'block';
+                demoBanner.style.display = 'block';
 
-                // Ensure dark background and padding for the PDF
-                const orgPadding = element.style.padding;
-                const orgBackground = element.style.background;
-                element.style.padding = '20px';
-                element.style.background = '#0a0a0c';
+                const badge = document.getElementById('conn-status');
+                document.getElementById('conn-text').innerText = "Demo Data (Extension Not Linked)";
+                badge.classList.add('demo');
+                processData(generateDemoData());
+            }
 
-                const opt = {
-                    margin: 0.2,
-                    filename: 'RewordIt_Full_Dashboard.pdf',
-                    image: { type: 'jpeg', quality: 0.98 },
-                    html2canvas: { scale: 1.5, useCORS: true, backgroundColor: '#0a0a0c', windowWidth: 1400 },
-                    jsPDF: { unit: 'in', format: 'tabloid', orientation: 'portrait' }
-                };
+            if (savedId) {
+                chrome.runtime.sendMessage(savedId, { type: 'getData' }, (response) => {
+                    if (chrome.runtime.lastError || !response || !response.success) {
+                        showDemoMode(); // Extension not found or communication failed
+                    } else {
+                        dashContent.style.display = 'block';
+                        connSetup.style.display = 'none';
+                        demoBanner.style.display = 'none';
+                        document.getElementById('conn-text').innerText = "Live Extension Data";
+                        document.getElementById('conn-status').classList.remove('demo');
+                        processData(response.messages || []);
+                    }
+                });
+            } else {
+                showConnectionSetup();
+            }
 
-                html2pdf().set(opt).from(element).save().then(() => {
-                    // Restore original state
-                    btn.style.display = 'flex';
-                    btn.innerHTML = originalText;
-                    btn.style.pointerEvents = 'auto';
-                    element.style.padding = orgPadding;
-                    element.style.background = orgBackground;
-                }).catch(err => {
-                    console.error("PDF Generation Error", err);
-                    btn.style.display = 'flex';
-                    btn.innerHTML = originalText;
-                    btn.style.pointerEvents = 'auto';
-                    element.style.padding = orgPadding;
-                    element.style.background = orgBackground;
+            // Bind Setup Buttons
+            document.getElementById('connect-btn').addEventListener('click', () => {
+                const idInput = document.getElementById('ext-id-input').value.trim();
+                const err = document.getElementById('conn-error');
+                if (!idInput) {
+                    err.innerText = "Please enter an Extension ID";
+                    err.style.display = 'block';
+                    return;
+                }
+
+                const btnText = document.getElementById('connect-btn-text');
+                const btnSpinner = document.getElementById('connect-btn-spinner');
+
+                btnText.style.display = 'none';
+                btnSpinner.style.display = 'block';
+                err.style.display = 'none';
+
+                chrome.runtime.sendMessage(idInput, { type: 'getData' }, (response) => {
+                    btnText.style.display = 'inline';
+                    btnSpinner.style.display = 'none';
+                    if (chrome.runtime.lastError || !response || !response.success) {
+                        err.innerText = "Extension not found. Make sure it is installed and the ID is correct.";
+                        err.style.display = 'block';
+                    } else {
+                        localStorage.setItem('rewordit_extension_id', idInput);
+                        window.location.reload();
+                    }
                 });
             });
-        </script>
+
+            document.getElementById('demo-btn').addEventListener('click', () => {
+                showDemoMode();
+            });
+        };
+
+        window.onload = attemptLoadData;
+
+        // Premium Elastic Cursor Logic
+        const cursorDot = document.getElementById('cursor-dot');
+        const cursorFollower = document.getElementById('cursor-follower');
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
+        let dotX = mouseX, dotY = mouseY;
+        let followerX = mouseX, followerY = mouseY;
+        let prevFollowerX = followerX, prevFollowerY = followerY;
+
+        window.addEventListener('mousemove', function (e) {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        function animateCursor() {
+            // Immediate snap dot
+            dotX += (mouseX - dotX) * 0.4;
+            dotY += (mouseY - dotY) * 0.4;
+            cursorDot.style.transform = `translate(${dotX}px, ${dotY}px) translate(-50%, -50%)`;
+
+            // Elastic follower
+            followerX += (mouseX - followerX) * 0.15;
+            followerY += (mouseY - followerY) * 0.15;
+
+            // Velocity and Stretching calculations (Squash & Stretch principle)
+            let velX = followerX - prevFollowerX;
+            let velY = followerY - prevFollowerY;
+            let distance = Math.sqrt(velX * velX + velY * velY);
+            let angle = Math.atan2(velY, velX) * 180 / Math.PI;
+
+            // Cap the stretch scale
+            let scaleX = Math.min(1 + distance * 0.012, 1.8);
+            let scaleY = Math.max(1 - distance * 0.005, 0.7);
+
+            // If hovering, disable stretch for a clean circular highlight
+            if (document.body.classList.contains('cursor-hover')) {
+                scaleX = 1; scaleY = 1; angle = 0;
+            }
+
+            cursorFollower.style.transform =
+                `translate(${followerX}px, ${followerY}px) translate(-50%, -50%) rotate(${angle}deg) scale(${scaleX}, ${scaleY})`;
+
+            prevFollowerX = followerX;
+            prevFollowerY = followerY;
+
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+
+        const clickables = document.querySelectorAll('a, button, .stat-card, input, [role="button"], #weekly-report');
+        clickables.forEach((el) => {
+            el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+            el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+        });
+        // PDF Export Logic
+        document.getElementById('download-pdf-btn').addEventListener('click', function () {
+            const btn = this;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = `<span class="spinner" style="display:inline-block; width: 14px; height: 14px; border: 2px solid #fff; border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite;"></span> Generating...`;
+            btn.style.pointerEvents = 'none';
+
+            const element = document.getElementById('dashboard-content');
+
+            // Hide the button itself in the PDF
+            btn.style.display = 'none';
+
+            // Ensure dark background and padding for the PDF
+            const orgPadding = element.style.padding;
+            const orgBackground = element.style.background;
+            element.style.padding = '20px';
+            element.style.background = '#0a0a0c';
+
+            const opt = {
+                margin: 0.2,
+                filename: 'RewordIt_Full_Dashboard.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 1.5, useCORS: true, backgroundColor: '#0a0a0c', windowWidth: 1400 },
+                jsPDF: { unit: 'in', format: 'tabloid', orientation: 'portrait' }
+            };
+
+            html2pdf().set(opt).from(element).save().then(() => {
+                // Restore original state
+                btn.style.display = 'flex';
+                btn.innerHTML = originalText;
+                btn.style.pointerEvents = 'auto';
+                element.style.padding = orgPadding;
+                element.style.background = orgBackground;
+            }).catch(err => {
+                console.error("PDF Generation Error", err);
+                btn.style.display = 'flex';
+                btn.innerHTML = originalText;
+                btn.style.pointerEvents = 'auto';
+                element.style.padding = orgPadding;
+                element.style.background = orgBackground;
+            });
+        });
+    </script>
 </body>
 
 </html>
