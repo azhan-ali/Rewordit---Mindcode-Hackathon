@@ -1,0 +1,13 @@
+{
+    "cleanUrls": true,
+    "rewrites": [
+        {
+            "source": "/dashboard",
+            "destination": "/RewordIt/website/dashboard.html"
+        },
+        {
+            "source": "/(.*)",
+            "destination": "/RewordIt/website/$1"
+        }
+    ]
+}
