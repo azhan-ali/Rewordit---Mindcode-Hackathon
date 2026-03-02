@@ -566,17 +566,42 @@
             </div>
         </div>
 
-        <!-- Section 2 -->
-        <div class="chart-section">
-            <div class="chart-header">
-                <h2>Mood Timeline</h2>
-                <p style="color: var(--text-muted);">Average stress score over the last 7 days.</p>
+        <!-- Section 2 & 3: Twin Charts -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+            <!-- Section 2: Mood Timeline -->
+            <div class="chart-section" style="margin-bottom: 20px;">
+                <div class="chart-header">
+                    <h2>Mood Timeline</h2>
+                    <p style="color: var(--text-muted);">Average stress over last 7 days.</p>
+                </div>
+                <canvas id="moodChart" height="150"></canvas>
+                <div class="chart-insight" id="auto-insight">
+                    Generating insight...
+                </div>
             </div>
 
-            <canvas id="moodChart" height="100"></canvas>
+            <!-- Section 3: Tone Radar Chart -->
+            <div class="chart-section" style="margin-bottom: 20px;">
+                <div class="chart-header">
+                    <h2>Tone Distribution</h2>
+                    <p style="color: var(--text-muted);">Your communication persona.</p>
+                </div>
+                <!-- Need relative container to allow canvas to scale properly avoiding unbounded height issues -->
+                <div
+                    style="position: relative; height: 300px; width: 100%; display: flex; justify-content: center; align-items: center;">
+                    <canvas id="radarChart"></canvas>
+                </div>
+            </div>
+        </div>
 
-            <div class="chart-insight" id="auto-insight">
-                Generating insight...
+        <!-- Section 4: Calm Streak Heatmap -->
+        <div class="chart-section" style="margin-top: 40px;">
+            <div class="chart-header">
+                <h2>Calm Streak Calendar</h2>
+                <p style="color: var(--text-muted);">Mental freshness over the last 30 days. Green is good.</p>
+            </div>
+            <div id="heatmap-container" style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 20px;">
+                <!-- Populated by JS -->
             </div>
         </div>
 
@@ -606,14 +631,22 @@
             const platforms = ['slack', 'gmail', 'twitter', 'whatsapp'];
             let now = new Date();
 
-            for (let i = 0; i < 40; i++) {
-                const daysAgo = Math.floor(Math.random() * 7);
+            for (let i = 0; i < 150; i++) {
+                const daysAgo = Math.floor(Math.random() * 30);
                 const isHighStress = Math.random() > 0.8;
                 const score = isHighStress ? Math.floor(Math.random() * 20 + 80) : Math.floor(Math.random() * 40 + 10);
+
+                let ems = [];
+                if (isHighStress) {
+                    ems = [['Aggressive', 'Frustrated'], ['Anxious', 'Passive-Aggressive']][Math.floor(Math.random() * 2)];
+                } else {
+                    ems = [['Professional', 'Chill'], ['Assertive', 'Chill']][Math.floor(Math.random() * 2)];
+                }
 
                 data.push({
                     timestamp: now.getTime() - (daysAgo * 24 * 60 * 60 * 1000) - (Math.random() * 10000000),
                     stress_score: score,
+                    emotions: ems,
                     platform: platforms[Math.floor(Math.random() * platforms.length)],
                     rewrite_accepted: score > 50 ? Math.random() > 0.3 : false,
                     cooling_triggered: score > 85
@@ -796,6 +829,105 @@
                 else if (maxVal > -1 && maxScoreDay) tipEl.innerText = `You're consistently stressed on ${maxScoreDay}s. Try avoiding important emails in the afternoon on this day.`;
                 else if (weekAvg > 70) tipEl.innerText = "Overall stress was high this week. Disconnecting over the weekend is highly recommended.";
                 else tipEl.innerText = "Keep going — every rewrite is a better conversation.";
+            }
+
+            // --- Section: Tone Radar Chart Prep ---
+            const toneCounts = { Aggressive: 0, Anxious: 0, 'Passive-Aggressive': 0, Assertive: 0, Professional: 0, Chill: 0, Frustrated: 0 };
+            history.forEach(item => {
+                if (item.emotions && item.emotions.length > 0) {
+                    item.emotions.forEach(e => {
+                        if (toneCounts[e] !== undefined) toneCounts[e]++;
+                    });
+                } else {
+                    if (item.stress_score > 80) toneCounts.Aggressive++;
+                    else if (item.stress_score > 60) toneCounts.Anxious++;
+                    else toneCounts.Professional++;
+                }
+            });
+            const radarCtx = document.getElementById('radarChart').getContext('2d');
+            new Chart(radarCtx, {
+                type: 'radar',
+                data: {
+                    labels: Object.keys(toneCounts),
+                    datasets: [{
+                        label: 'Tone Frequency',
+                        data: Object.values(toneCounts),
+                        backgroundColor: 'rgba(248, 171, 16, 0.2)',
+                        borderColor: '#f8ab10',
+                        pointBackgroundColor: '#ff3b3b',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#ff3b3b',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { color: 'rgba(255,255,255,0.1)' },
+                            grid: { color: 'rgba(255,255,255,0.1)' },
+                            pointLabels: { color: '#a0a0a5', font: { family: 'Outfit', size: 12, weight: 'bold' } },
+                            ticks: { display: false, backdropColor: 'transparent' }
+                        }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+
+            // --- Section: Heatmap Prep ---
+            const heatmapContainer = document.getElementById('heatmap-container');
+            heatmapContainer.innerHTML = '';
+            for (let i = 29; i >= 0; i--) {
+                const d = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
+                const dayItems = history.filter(item => {
+                    const idate = new Date(item.timestamp);
+                    return idate.getDate() === d.getDate() && idate.getMonth() === d.getMonth();
+                });
+
+                let tooltip = d.toLocaleDateString() + ' : No activity';
+                let boxColor = 'rgba(255, 255, 255, 0.05)';
+                let glow = 'none';
+
+                if (dayItems.length > 0) {
+                    const maxStress = Math.max(...dayItems.map(x => x.stress_score));
+                    const hadCooling = dayItems.some(x => x.cooling_triggered);
+
+                    if (hadCooling || maxStress > 85) {
+                        boxColor = '#ff3b3b';
+                        glow = '0 0 10px rgba(255, 59, 59, 0.5)';
+                        tooltip = d.toLocaleDateString() + ` : Red Alert (${dayItems.length} msgs, Peak: ${maxStress})`;
+                    } else if (maxStress > 60) {
+                        boxColor = '#f8ab10';
+                        glow = '0 0 10px rgba(248, 171, 16, 0.5)';
+                        tooltip = d.toLocaleDateString() + ` : Moderate Stress (${dayItems.length} msgs, Peak: ${maxStress})`;
+                    } else {
+                        boxColor = '#4ade80';
+                        glow = '0 0 10px rgba(74, 222, 128, 0.5)';
+                        tooltip = d.toLocaleDateString() + ` : Calm & Professional (${dayItems.length} msgs)`;
+                    }
+                }
+
+                const box = document.createElement('div');
+                box.style.width = '24px';
+                box.style.height = '24px';
+                box.style.borderRadius = '4px';
+                box.style.backgroundColor = boxColor;
+                box.style.boxShadow = glow;
+                box.title = tooltip;
+                box.style.transition = 'all 0.3s ease';
+
+                box.onmouseenter = () => {
+                    box.style.transform = 'scale(1.3) translateY(-2px)';
+                    document.body.classList.add('cursor-hover');
+                };
+                box.onmouseleave = () => {
+                    box.style.transform = 'scale(1) translateY(0)';
+                    document.body.classList.remove('cursor-hover');
+                };
+
+                heatmapContainer.appendChild(box);
             }
 
             // Platform Breakdown List
