@@ -1,4 +1,4 @@
-const GEMINI_API_KEY = "AIzaSyCJKF9BAFTgoVp6lWYymsghG-NdxqV5WUQ";
+const GEMINI_API_KEY = "Put_Your_GEMINI_API_KEY";
 const url = `https://generativelanguage.googleapis.com/v1beta/models?key=${GEMINI_API_KEY}`;
 
 async function testAPI() {

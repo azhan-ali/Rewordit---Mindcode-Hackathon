@@ -1,0 +1,47 @@
+ <!DOCTYPE html>
+<html>
+
+<head>
+    <title>Test Translator Complete UI</title>
+</head>
+
+<body style="padding: 50px; background-color: #f0f2f5;">
+    <h2>Type something aggressive here:</h2>
+    <textarea id="myinput" rows="5" cols="40"></textarea>
+
+    <script>
+        // Mock chrome API for testing Tone Translator UI
+        window.chrome = {
+            runtime: {
+                sendMessage: function (msg, callback) {
+                    if (msg.action === 'analyze_text') {
+                        setTimeout(() => {
+                            callback({
+                                success: true,
+                                data: {
+                                    stress_score: 75,
+                                    emotions: ['frustrated', 'annoyed'],
+                                    reworded_options: [
+                                        { tone: 'Professional', text: 'I would like to request that we find a more productive approach to this.' },
+                                        { tone: 'Direct', text: 'This current approach is not working. Let us change it.' },
+                                        { tone: 'Soft', text: 'I believe we can find a slightly better way to work on this together.' }
+                                    ]
+                                }
+                            });
+                        }, 500);
+                    }
+                },
+                lastError: null
+            },
+            storage: {
+                local: {
+                    get: (keys, cb) => cb({}),
+                    set: (obj, cb) => { if (cb) cb(); }
+                }
+            }
+        };
+    </script>
+    <script src="content.js"></script>
+</body>
+
+</html>
