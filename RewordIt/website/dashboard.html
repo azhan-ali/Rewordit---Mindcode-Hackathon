@@ -596,11 +596,32 @@
 
         <!-- Section 4: Calm Streak Heatmap -->
         <div class="chart-section" style="margin-top: 40px;">
-            <div class="chart-header">
-                <h2>Calm Streak Calendar</h2>
-                <p style="color: var(--text-muted);">Mental freshness over the last 30 days. Green is good.</p>
+            <div class="chart-header"
+                style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 15px;">
+                <div>
+                    <h2>Calm Streak Calendar</h2>
+                    <p style="color: var(--text-muted);">Mental freshness over the last 30 days.</p>
+                </div>
+                <div
+                    style="display: flex; gap: 12px; font-size: 12px; color: var(--text-muted); align-items: center; font-weight: 500;">
+                    <span style="display:flex; align-items:center; gap:4px;">
+                        <div
+                            style="width:12px;height:12px;border-radius:3px;background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1);">
+                        </div> No Data
+                    </span>
+                    <span style="display:flex; align-items:center; gap:4px;">
+                        <div style="width:12px;height:12px;border-radius:3px;background:#4ade80;"></div> Calm
+                    </span>
+                    <span style="display:flex; align-items:center; gap:4px;">
+                        <div style="width:12px;height:12px;border-radius:3px;background:#f8ab10;"></div> Moderate
+                    </span>
+                    <span style="display:flex; align-items:center; gap:4px;">
+                        <div style="width:12px;height:12px;border-radius:3px;background:#ff3b3b;"></div> High Stress
+                    </span>
+                </div>
             </div>
-            <div id="heatmap-container" style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 20px;">
+            <!-- Labels for months could go here, but days inside blocks is better for flex-wrap -->
+            <div id="heatmap-container" style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 20px;">
                 <!-- Populated by JS -->
             </div>
         </div>
@@ -910,13 +931,28 @@
                 }
 
                 const box = document.createElement('div');
-                box.style.width = '24px';
-                box.style.height = '24px';
-                box.style.borderRadius = '4px';
+                box.style.width = '30px';
+                box.style.height = '30px';
+                box.style.borderRadius = '6px';
                 box.style.backgroundColor = boxColor;
                 box.style.boxShadow = glow;
                 box.title = tooltip;
                 box.style.transition = 'all 0.3s ease';
+
+                // Add Day number inside the box for context
+                box.style.display = 'flex';
+                box.style.alignItems = 'center';
+                box.style.justifyContent = 'center';
+                box.style.fontSize = '12px';
+                box.style.fontFamily = 'Outfit, sans-serif';
+                box.style.color = (boxColor === 'rgba(255, 255, 255, 0.05)') ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.6)';
+                box.style.fontWeight = '800';
+                box.innerText = d.getDate();
+
+                // Dim down the empty boxes slightly more so colored ones pop
+                if (boxColor === 'rgba(255, 255, 255, 0.05)') {
+                    box.style.border = '1px solid rgba(255,255,255,0.05)';
+                }
 
                 box.onmouseenter = () => {
                     box.style.transform = 'scale(1.3) translateY(-2px)';
