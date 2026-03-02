@@ -1,8 +1,11 @@
 {
-    "cleanUrls": true,
     "rewrites": [
         {
             "source": "/dashboard",
+            "destination": "/RewordIt/website/dashboard.html"
+        },
+        {
+            "source": "/dashboard.html",
             "destination": "/RewordIt/website/dashboard.html"
         },
         {
