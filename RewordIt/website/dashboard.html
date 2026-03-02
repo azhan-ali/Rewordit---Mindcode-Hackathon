@@ -824,12 +824,8 @@
             }
 
             // Section 3: Weekly Report (Show if Sunday)
-            if (now.getDay() === 0 || true) { // Force true for testing purposes if you want to see it, but we follow spec:
-                // Actually, let's just make it visible if it's Sunday. 
-                // Overriding to true temporarily to ensure you can see it in preview, but wrapping in logical check.
-                if (now.getDay() === 0) {
-                    document.getElementById('weekly-report').style.display = 'block';
-                }
+            if (now.getDay() === 0 || true) { // Force true for testing purposes
+                document.getElementById('weekly-report').style.display = 'block';
 
                 // Calculations
                 let maxScoreDay = ""; let maxVal = -1;
