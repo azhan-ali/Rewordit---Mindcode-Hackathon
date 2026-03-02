@@ -1,0 +1,13 @@
+{
+    "cleanUrls": true,
+    "rewrites": [
+        {
+            "source": "/dashboard",
+            "destination": "/website/dashboard.html"
+        },
+        {
+            "source": "/(.*)",
+            "destination": "/website/$1"
+        }
+    ]
+}
